@@ -1,0 +1,138 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - experimental
+  pull_request:
+    branches:
+      - experimental
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true   # <-- permite push usando GITHUB_TOKEN
+      
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential mingw-w64 unzip \
+            libx11-dev libxcursor-dev libxi-dev \
+            libxxf86vm-dev libgl1-mesa-dev libglu1-mesa-dev \
+            libasound2-dev libopenal-dev libpng-dev zlib1g-dev \
+            libxrandr-dev libxinerama-dev
+      
+      - name: Download and install Raylib for Linux
+        run: |
+          git clone https://github.com/raysan5/raylib.git raylib-linux
+          cd raylib-linux
+          git fetch --tags
+          LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
+          git checkout $LATEST_TAG
+          mkdir build && cd build
+          cmake -DBUILD_SHARED_LIBS=ON ..
+          make -j$(nproc)
+          sudo make install
+          sudo ldconfig
+          cd ../..
+      
+      - name: Download latest Raylib for MinGW
+        run: |
+          LATEST_RELEASE=$(curl -s https://api.github.com/repos/raysan5/raylib/releases/latest | grep "browser_download_url.*win64_mingw-w64.zip" | cut -d '"' -f 4)
+          curl -L -o raylib.zip $LATEST_RELEASE
+          unzip raylib.zip -d raylib
+
+      - name: Build for Linux
+        run: |
+          export C_INCLUDE_PATH=/usr/local/include
+          export LIBRARY_PATH=/usr/local/lib
+          gcc -o aniversario aniversario.c -lraylib -lm -lpthread -ldl
+        env:
+          C_INCLUDE_PATH: /usr/local/include
+          LIBRARY_PATH: /usr/local/lib
+
+      - name: Build for Windows using MinGW
+        run: |
+          RAYLIB_DIR=$(find $(pwd)/raylib -maxdepth 1 -type d -name "raylib-*" | head -n 1)
+          echo "Usando Raylib em: $RAYLIB_DIR"
+          x86_64-w64-mingw32-gcc -o aniversario.exe aniversario.c -I${RAYLIB_DIR}/include -L${RAYLIB_DIR}/lib -lraylib -lopengl32 -lgdi32 -lwinmm
+
+      - name: Copy executables to release folder
+        run: |
+          mkdir -p releases
+          cp aniversario releases/aniversario
+          cp aniversario.exe releases/aniversario.exe
+          # Set executable permissions for the Linux binary
+          chmod +x releases/aniversario
+          # Windows .exe files don't need +x permissions in Linux, but marking them anyway
+          chmod +x releases/aniversario.exe
+
+      - name: Configure Git user for tagging
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create and push tag with semantic versioning
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          LAST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1) 2>/dev/null || echo "v0.0.0")
+          NEW_TAG=$(echo $LAST_TAG | awk -F. '{$NF++; print $1"."$2"."$NF}')
+          TAG_NAME="$NEW_TAG"
+
+          if [ -f release-notes.md ]; then
+            TAG_MESSAGE=$(cat release-notes.md)
+          else
+            TAG_MESSAGE="Atualização automática (sem release-notes.md)"
+          fi
+
+          git tag -a "$TAG_NAME" -m "$TAG_MESSAGE"
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+          git push origin "$TAG_NAME"
+      
+      - name: Create GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          LAST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
+          
+          if [ -f release-notes.md ]; then
+            RELEASE_BODY=$(cat release-notes.md)
+          else
+            RELEASE_BODY="Automated release for version $LAST_TAG"
+          fi
+          
+          # Create the release with the tag
+          gh release create $LAST_TAG \
+            --title "Birthday Card Release $LAST_TAG" \
+            --notes "$RELEASE_BODY" \
+            ./releases/aniversario \
+            ./releases/aniversario.exe
+
+      - name: Clear release notes for next version
+        run: |
+          if [ -f release-notes.md ]; then
+            # Create a backup of the old release notes with the version tag
+            LAST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
+            cp release-notes.md "release-notes-$LAST_TAG.md"
+            
+            # Clear the release-notes.md file
+            echo "# Release Notes" > release-notes.md
+            echo "<!-- Add release notes for the next version here -->" >> release-notes.md
+            
+            # Commit the changes
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add release-notes.md "release-notes-$LAST_TAG.md"
+            git commit -m "Clear release notes for next version"
+            git push origin ${GITHUB_REF#refs/heads/}
+          fi
