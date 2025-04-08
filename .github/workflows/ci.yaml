@@ -66,6 +66,12 @@ jobs:
           echo "Usando Raylib em: $RAYLIB_DIR"
           x86_64-w64-mingw32-gcc -o aniversario.exe aniversario.c -I${RAYLIB_DIR}/include -L${RAYLIB_DIR}/lib -lraylib -lopengl32 -lgdi32 -lwinmm
 
+      - name: Copy executables to release folder
+        run: |
+          mkdir -p releases
+          cp aniversario releases/aniversario
+          cp aniversario.exe releases/aniversario.exe
+
       - name: Configure Git user for tagging
         run: |
           git config user.name "github-actions[bot]"
@@ -88,3 +94,22 @@ jobs:
           git tag -a "$TAG_NAME" -m "$TAG_MESSAGE"
           git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
           git push origin "$TAG_NAME"
+      
+      - name: Create GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          LAST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
+          
+          if [ -f release-notes.md ]; then
+            RELEASE_BODY=$(cat release-notes.md)
+          else
+            RELEASE_BODY="Automated release for version $LAST_TAG"
+          fi
+          
+          # Create the release with the tag
+          gh release create $LAST_TAG \
+            --title "Birthday Card Release $LAST_TAG" \
+            --notes "$RELEASE_BODY" \
+            ./releases/aniversario \
+            ./releases/aniversario.exe
