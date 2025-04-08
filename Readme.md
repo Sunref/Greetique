@@ -49,7 +49,7 @@ To personalize this birthday card for someone else:
 1. Fork this repository (make sure to keep it public for GitHub Actions to work properly)
 2. Modify the text in `aniversario.c` to change the displayed message
 3. Update the release-notes.md file to document your changes
-4. Commit and push to the experimental branch
+4. Commit and push to the main branch
 
 The GitHub Actions workflow will automatically build both Windows and Linux versions and create a new release.
 
@@ -60,7 +60,7 @@ This project uses GitHub Actions to:
 - Create versioned releases with downloadable executables
 - Maintain release notes history
 
-To trigger a new release, simply update the `release-notes.md` file and push to the experimental branch.
+To trigger a new release, simply update the `release-notes.md` file and push to the main branch.
 
 ## Credits
 
