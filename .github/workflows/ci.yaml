@@ -62,7 +62,14 @@ jobs:
           echo "Usando Raylib em: $RAYLIB_DIR"
           x86_64-w64-mingw32-gcc -o aniversario.exe aniversario.c -I${RAYLIB_DIR}/include -L${RAYLIB_DIR}/lib -lraylib -lopengl32 -lgdi32 -lwinmm
 
+      - name: Configure Git user for tagging
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
       - name: Create and push tag with semantic versioning
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           LAST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1) 2>/dev/null || echo "v0.0.0")
           NEW_TAG=$(echo $LAST_TAG | awk -F. '{$NF++; print $1"."$2"."$NF}')
@@ -76,5 +83,3 @@ jobs:
 
           git tag -a "$TAG_NAME" -m "$TAG_MESSAGE"
           git push origin "$TAG_NAME"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
