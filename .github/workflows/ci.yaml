@@ -1,4 +1,5 @@
 name: CI
+
 on:
   push:
     branches:
@@ -6,9 +7,11 @@ on:
   pull_request:
     branches:
       - main
+
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -55,27 +58,23 @@ jobs:
 
       - name: Build for Windows using MinGW
         run: |
-          RAYLIB_DIR=$(pwd)/raylib/raylib-*
+          RAYLIB_DIR=$(find $(pwd)/raylib -maxdepth 1 -type d -name "raylib-*" | head -n 1)
+          echo "Usando Raylib em: $RAYLIB_DIR"
           x86_64-w64-mingw32-gcc -o aniversario.exe aniversario.c -I${RAYLIB_DIR}/include -L${RAYLIB_DIR}/lib -lraylib -lopengl32 -lgdi32 -lwinmm
 
       - name: Create and push tag with semantic versioning
         run: |
-          # Obter a última tag ou definir v0.0.0 como padrão
           LAST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1) 2>/dev/null || echo "v0.0.0")
           NEW_TAG=$(echo $LAST_TAG | awk -F. '{$NF++; print $1"."$2"."$NF}')
           TAG_NAME="$NEW_TAG"
 
-          # Ler o conteúdo do arquivo release-notes.md
           if [ -f release-notes.md ]; then
             TAG_MESSAGE=$(cat release-notes.md)
           else
             TAG_MESSAGE="Atualização automática (sem release-notes.md)"
           fi
 
-          # Criar a tag com a mensagem
           git tag -a "$TAG_NAME" -m "$TAG_MESSAGE"
-
-          # Fazer push da tag para o repositório
           git push origin "$TAG_NAME"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
