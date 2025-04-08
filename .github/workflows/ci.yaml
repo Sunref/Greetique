@@ -38,39 +38,43 @@ jobs:
           sudo ldconfig
           cd ../..
       
-      - name: Download Raylib for Windows
+      - name: Download latest Raylib for MinGW
         run: |
-          wget https://github.com/raysan5/raylib/releases/latest/download/raylib-4.2.0-Win64-mingw.zip
-          unzip raylib-4.2.0-Win64-mingw.zip -d raylib-windows
-      
+          LATEST_RELEASE=$(curl -s https://api.github.com/repos/raysan5/raylib/releases/latest | grep "browser_download_url.*win64_mingw-w64.zip" | cut -d '"' -f 4)
+          curl -L -o raylib.zip $LATEST_RELEASE
+          unzip raylib.zip -d raylib
+
       - name: Build for Linux
         run: |
           export C_INCLUDE_PATH=/usr/local/include
           export LIBRARY_PATH=/usr/local/lib
           gcc -o aniversario aniversario.c -lraylib -lm -lpthread -ldl
-      
+        env:
+          C_INCLUDE_PATH: /usr/local/include
+          LIBRARY_PATH: /usr/local/lib
+
       - name: Build for Windows using MinGW
         run: |
-          x86_64-w64-mingw32-gcc -o aniversario.exe aniversario.c \
-            -I./raylib-windows/include -L./raylib-windows/lib \
-            -lraylib -lopengl32 -lgdi32 -lwinmm
-      
+          RAYLIB_DIR=$(pwd)/raylib/raylib-*
+          x86_64-w64-mingw32-gcc -o aniversario.exe aniversario.c -I${RAYLIB_DIR}/include -L${RAYLIB_DIR}/lib -lraylib -lopengl32 -lgdi32 -lwinmm
+
       - name: Create and push tag with semantic versioning
         run: |
           # Obter a última tag ou definir v0.0.0 como padrão
           LAST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1) 2>/dev/null || echo "v0.0.0")
           NEW_TAG=$(echo $LAST_TAG | awk -F. '{$NF++; print $1"."$2"."$NF}')
           TAG_NAME="$NEW_TAG"
-          
-          # Ler o Conteúdo do arquivo release-notes.md
+
+          # Ler o conteúdo do arquivo release-notes.md
           if [ -f release-notes.md ]; then
             TAG_MESSAGE=$(cat release-notes.md)
           else
             TAG_MESSAGE="Atualização automática (sem release-notes.md)"
           fi
-          
+
           # Criar a tag com a mensagem
           git tag -a "$TAG_NAME" -m "$TAG_MESSAGE"
+
           # Fazer push da tag para o repositório
           git push origin "$TAG_NAME"
         env:
