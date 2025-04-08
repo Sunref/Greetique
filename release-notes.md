@@ -1,6 +1,6 @@
 # Birthday Card App Release Notes
 
-## Version 0.0.1a (2025-04-08)
+## Version 0.0.3a (2025-04-08)
 
 ### Initial Release
 
