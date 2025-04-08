@@ -22,7 +22,7 @@ jobs:
           sudo apt-get install -y libx11-dev libxcursor-dev libxi-dev \
             libxxf86vm-dev libgl1-mesa-dev libglu1-mesa-dev \
             libasound2-dev libopenal-dev libpng-dev zlib1g-dev \
-            libxrandr-dev libxinerama-dev  # Pacotes necessários para X11
+            libxrandr-dev libxinerama-dev
             
       - name: Download and install Raylib for Linux
         run: |
@@ -41,18 +41,11 @@ jobs:
           sudo ldconfig
           cd ../..
           
-      - name: Download latest Raylib for MinGW
-        run: |
-          LATEST_RELEASE=$(curl -s https://api.github.com/repos/raysan5/raylib/releases/latest | grep "browser_download_url.*win64_mingw-w64.zip" | cut -d'"' -f 4)
-          curl -L -o raylib.zip $LATEST_RELEASE
-          unzip raylib.zip -d raylib
-          
       - name: Build for Linux
         run: |
+          export C_INCLUDE_PATH=/usr/local/include
+          export LIBRARY_PATH=/usr/local/lib
           gcc -o aniversario aniversario.c -lraylib -lm -lpthread -ldl
-          env:
-            C_INCLUDE_PATH: /usr/local/include
-            LIBRARY_PATH: /usr/local/lib
           
       - name: Build for Windows using MinGW
         run: |
