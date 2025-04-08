@@ -1,5 +1,4 @@
 name: CI
-
 on:
   push:
     branches:
@@ -7,55 +6,53 @@ on:
   pull_request:
     branches:
       - main
-
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Para garantir que todas as tags sejam obtidas
-
+          fetch-depth: 0
+      
       - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y build-essential mingw-w64 unzip
-          sudo apt-get install -y libx11-dev  # Add this line to install X11 development libraries
-
+          sudo apt-get install -y libx11-dev libxcursor-dev libxi-dev \
+            libxxf86vm-dev libgl1-mesa-dev libglu1-mesa-dev \
+            libasound2-dev libopenal-dev libpng-dev zlib1g-dev
+            
       - name: Download and install Raylib for Linux
         run: |
-          # Clonar o repositório Raylib
           git clone https://github.com/raysan5/raylib.git raylib-linux
           cd raylib-linux
-
-          # Obter a versão mais recente
+          
+          # Obtém a última versão estável
           git fetch --tags
           LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
           git checkout $LATEST_TAG
-
-          # Compilar e instalar
+          
           mkdir build && cd build
           cmake -DBUILD_SHARED_LIBS=ON ..
-          make
+          make -j$(nproc)
           sudo make install
           sudo ldconfig
           cd ../..
-
+          
       - name: Download latest Raylib for MinGW
         run: |
-          LATEST_RELEASE=$(curl -s https://api.github.com/repos/raysan5/raylib/releases/latest | grep "browser_download_url.*win64_mingw-w64.zip" | cut -d '"' -f 4)
+          LATEST_RELEASE=$(curl -s https://api.github.com/repos/raysan5/raylib/releases/latest | grep "browser_download_url.*win64_mingw-w64.zip" | cut -d'"' -f 4)
           curl -L -o raylib.zip $LATEST_RELEASE
           unzip raylib.zip -d raylib
-
+          
       - name: Build for Linux
         run: |
           gcc -o aniversario aniversario.c -lraylib -lm -lpthread -ldl
-        env:
-          C_INCLUDE_PATH: /usr/local/include
-          LIBRARY_PATH: /usr/local/lib
-
+          env:
+            C_INCLUDE_PATH: /usr/local/include
+            LIBRARY_PATH: /usr/local/lib
+          
       - name: Build for Windows using MinGW
         run: |
           RAYLIB_DIR=$(pwd)/raylib/raylib-*
