@@ -1,4 +1,3 @@
-//Aniversário do meu mano Gabriel
 //Feito por Fernanda com ajuda da IA Claude (não sei usar raylib direito)
 
 #include "raylib.h"
