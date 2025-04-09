@@ -55,7 +55,7 @@ jobs:
         run: |
           export C_INCLUDE_PATH=/usr/local/include
           export LIBRARY_PATH=/usr/local/lib
-          gcc -o aniversario aniversario.c -lraylib -lm -lpthread -ldl
+          gcc -o aniversario.bin aniversario.c -lraylib -lm -lpthread -ldl
         env:
           C_INCLUDE_PATH: /usr/local/include
           LIBRARY_PATH: /usr/local/lib
@@ -69,10 +69,10 @@ jobs:
       - name: Copy executables to release folder
         run: |
           mkdir -p releases
-          cp aniversario releases/aniversario
+          cp aniversario-linux.bin releases/aniversario-linux.bin
           cp aniversario.exe releases/aniversario.exe
           # Set executable permissions for the Linux binary
-          chmod +x releases/aniversario
+          chmod +x releases/aniversario-linux.bin
           # Windows .exe files don't need +x permissions in Linux, but marking them anyway
           chmod +x releases/aniversario.exe
 
@@ -115,7 +115,7 @@ jobs:
           gh release create $LAST_TAG \
             --title "Birthday Card Release $LAST_TAG" \
             --notes "$RELEASE_BODY" \
-            ./releases/aniversario \
+            ./releases/aniversario-linux.bin \
             ./releases/aniversario.exe
 
       - name: Clear release notes for next version

@@ -1,7 +1,7 @@
-# Birthday Card App Release Notes
-
-## Version 1.0.0 (2025-04-08)
-
+## Version 1.0.3 (2025-04-08)
+- Added MIT License
+- Bug fixes 
+- 
 ### Initial Release
 - Interactive birthday animation with colorful graphics
 - Fully implemented celebratory graphics with:
@@ -33,5 +33,3 @@
 - Add animation options and themes
 
 - Support for additional platforms (macOS, web)
-
-
