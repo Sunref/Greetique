@@ -69,7 +69,7 @@ jobs:
       - name: Copy executables to release folder
         run: |
           mkdir -p releases
-          cp aniversario-linux.bin releases/aniversario-linux.bin
+          cp aniversario.bin releases/aniversario-linux.bin
           cp aniversario.exe releases/aniversario.exe
           # Set executable permissions for the Linux binary
           chmod +x releases/aniversario-linux.bin
