@@ -39,7 +39,7 @@ jobs:
           LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
           git checkout $LATEST_TAG
           mkdir build && cd build
-          cmake -DBUILD_SHARED_LIBS=ON ..
+          cmake -DBUILD_SHARED_LIBS=OFF ..
           make -j$(nproc)
           sudo make install
           sudo ldconfig
