@@ -1,5 +1,3 @@
-//Feito por Fernanda com ajuda da IA Claude (não sei usar raylib direito)
-
 #include "raylib.h"
 #include <math.h>
 
@@ -25,8 +23,8 @@ typedef struct {
 
 int main() {
     // Inicialização da janela
-    const int screenWidth = 1000;
-    const int screenHeight = 850;
+    const int screenWidth = 1350;
+    const int screenHeight = 650;
     InitWindow(screenWidth, screenHeight, "Feliz Aniversário!");
 
     // Configuração da taxa de FPS
@@ -43,9 +41,9 @@ int main() {
         // Cores aleatórias vibrantes para os balões
         int colorIndex = GetRandomValue(0, 3);
         switch (colorIndex) {
-            case 0: balloons[i].color = GREEN; break;
+            case 0: balloons[i].color = RED; break;
             case 1: balloons[i].color = PURPLE; break;
-            case 2: balloons[i].color = BLUE; break;
+            case 2: balloons[i].color = MAGENTA; break;
             case 3: balloons[i].color = PINK; break;
         }
     }
@@ -153,13 +151,16 @@ int main() {
             }
 
             // Desenhar o texto de "Feliz Aniversário"
-            const char* text = "FELIZ ANIVERSÁRIO GABRIEL!!!";
-            const char* text2 = "Que seu dia tenha sido incrível, eu amo você irmão <3";
+            const char* text = "FELIZ ANIVERSÁRIO LARISSA!";
+            const char* text2 = "Que seu dia tenha sido incrível, e que venham muitos anos de amizade!";
+            const char* text3 = "Se sobrevivemos a PDS, sobrevivemos a tudo! sz";
 
             int fontSize = 50;
             int fontSize2 = 30;
+            int fontSize3 = 20;
             int textWidth = MeasureText(text, fontSize);
             int textWidth2 = MeasureText(text2, fontSize2);
+            int textWidth3 = MeasureText(text3, fontSize3);
 
             // Sombra do primeiro texto
             DrawText(
@@ -210,6 +211,31 @@ int main() {
                 screenHeight/2 + 40,
                 fontSize2,
                 textColor2
+            );
+
+            // Sombra do terceiro texto
+            DrawText(
+                text3,
+                screenWidth/2 - textWidth3/2 + 2,
+                screenHeight/2 + 80 + 2,
+                fontSize3,
+                BLACK
+            );
+
+            // Terceiro texto com cor pulsante (ligeiramente defasada)
+            Color textColor3 = (Color){
+                (unsigned char)(255 * fabs(sin(time * 0.5f + 1))),
+                (unsigned char)(255 * fabs(sin(time * 0.3f + 3))),
+                (unsigned char)(255 * fabs(sin(time * 0.2f + 5))),
+                255
+            };
+
+            DrawText(
+                text3,
+                screenWidth/2 - textWidth3/2,
+                screenHeight/2 + 80,
+                fontSize3,
+                textColor3
             );
 
         EndDrawing();
