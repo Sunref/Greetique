@@ -2,17 +2,17 @@
 #define CONFIG_H
 
 // Screen dimensions
-#define SCREEN_WIDTH 1350
-#define SCREEN_HEIGHT 650
+#define SCREEN_WIDTH 850
+#define SCREEN_HEIGHT 550
 
 // Animation configuration
 #define MAX_BALLOONS 20
 #define MAX_STARS 50
 
 // Animation messages
-#define MAIN_MESSAGE "FELIZ ANIVERSÁRIO LARISSA!"
-#define SUB_MESSAGE "Que seu dia tenha sido incrível, e que venham muitos anos de amizade!"
-#define THIRD_MESSAGE "Se sobrevivemos a PDS, sobrevivemos a tudo! sz"
+#define MAIN_MESSAGE "Happy Birthday!"
+#define SUB_MESSAGE "Your text here (short texts)"
+#define THIRD_MESSAGE "Subtext here. If necessary, resize the window"
 
 // Font sizes
 #define MAIN_FONT_SIZE 50

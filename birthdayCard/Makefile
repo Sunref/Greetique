@@ -26,7 +26,7 @@ $(TARGET): $(OBJS)
 	$(CC) $^ -o $@ $(LDFLAGS)
 
 # Compile
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c $(INCLUDE_DIR)/*.h
 	$(CC) $(CFLAGS) -I$(INCLUDE_DIR) -c $< -o $@
 
 # Clean

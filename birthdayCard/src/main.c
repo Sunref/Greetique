@@ -6,7 +6,7 @@
 
 int main() {
     // Initialize window
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Feliz Aniversário!");
+    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Happy Birthday!");
     SetTargetFPS(60);
 
     // Initialize objects
