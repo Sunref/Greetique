@@ -12,6 +12,24 @@ An interactive birthday animation created with Raylib to celebrate someone's bir
 - Cross-platform support (Windows and Linux)
 - Automatic builds and releases through GitHub Actions
 
+## Project Structure
+
+```
+birthdayCard/
+├── src/
+│   ├── main.c
+│   ├── balloon.c
+│   ├── balloon.h
+│   ├── star.c
+│   ├── star.h
+│   └── animation.c
+│   └── animation.h
+├── include/
+│   └── config.h
+├── Makefile
+└── README.md
+```
+
 ## Getting Started
 
 ### Building from Source
