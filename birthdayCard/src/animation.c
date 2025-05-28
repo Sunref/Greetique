@@ -2,6 +2,7 @@
 #include "../include/config.h"
 #include "../include/messageLoader.h"
 #include <math.h>
+#include <string.h>
 
 // Draw birthday message with animated color effects
 void DrawAnimatedText(float currentTime) {

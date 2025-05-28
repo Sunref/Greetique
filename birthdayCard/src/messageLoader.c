@@ -4,9 +4,9 @@
 #include "../include/messageLoader.h"
 
 // Global variables to store the loaded messages
-static char loadedMainMessage[256] = MAIN_MESSAGE;
-static char loadedSubMessage[256] = SUB_MESSAGE;
-static char loadedThirdMessage[256] = THIRD_MESSAGE;
+static char loadedMainMessage[256] = MAIN_MESSAGE "";
+static char loadedSubMessage[256] = SUB_MESSAGE "";
+static char loadedThirdMessage[256] = THIRD_MESSAGE "";
 
 // Function to load messages from file
 void LoadMessagesFromFile(void) {

@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include "raylib.h"
 #include <string.h>
 #include "../include/config.h"
@@ -21,28 +20,28 @@ int runMessageInterface(void) {
 
     // Initialize text boxes
     TextBox titleBox = {
-        .bounds = (Rectangle){ 50, 100, 700, 40 },
+        .bounds = (Rectangle){ 50, 100, 925, 40 },
         .text = "",
         .letterCount = 0,
         .isSelected = false
     };
 
     TextBox secondaryBox = {
-        .bounds = (Rectangle){ 50, 200, 700, 40 },
+        .bounds = (Rectangle){ 50, 200, 925, 40 },
         .text = "",
         .letterCount = 0,
         .isSelected = false
     };
 
     TextBox thirdBox = {
-        .bounds = (Rectangle){ 50, 300, 700, 40 },
+        .bounds = (Rectangle){ 50, 300, 925, 40 },
         .text = "",
         .letterCount = 0,
         .isSelected = false
     };
 
     // Build button
-    Rectangle buildButton = { 650, 500, 100, 40 };
+    Rectangle buildButton = { 875, 575, 100, 40 };
     int result = 0; // Return value: 0 = cancelled, 1 = messages saved
 
     while (!WindowShouldClose()) {
@@ -95,29 +94,31 @@ int runMessageInterface(void) {
 
         // Drawing
         BeginDrawing();
-            ClearBackground(RAYWHITE);
+
+            Color background = { 25, 25, 50, 255 };
+            ClearBackground(background);
 
             // Draw title
-            DrawText("made by: sunref", SCREEN_WIDTH - 150, 10, 20, RED);
+            DrawText("made by: sunref", SCREEN_WIDTH - 210, 10, 20, PINK);
 
             // Draw text boxes and labels
-            DrawText("Enter the title message", 50, 70, 20, RED);
+            DrawText("Enter the title message", 50, 70, 20, WHITE);
             DrawRectangleRec(titleBox.bounds, LIGHTGRAY);
-            if (titleBox.isSelected) DrawRectangleLinesEx(titleBox.bounds, 2, RED);
+            if (titleBox.isSelected) DrawRectangleLinesEx(titleBox.bounds, 4, PURPLE);
             DrawText(titleBox.text, titleBox.bounds.x + 5, titleBox.bounds.y + 10, 20, BLACK);
 
-            DrawText("Enter the secondary message", 50, 170, 20, RED);
+            DrawText("Enter the secondary message", 50, 170, 20, WHITE);
             DrawRectangleRec(secondaryBox.bounds, LIGHTGRAY);
-            if (secondaryBox.isSelected) DrawRectangleLinesEx(secondaryBox.bounds, 2, RED);
+            if (secondaryBox.isSelected) DrawRectangleLinesEx(secondaryBox.bounds, 4, PURPLE);
             DrawText(secondaryBox.text, secondaryBox.bounds.x + 5, secondaryBox.bounds.y + 10, 20, BLACK);
 
-            DrawText("Enter the third message", 50, 270, 20, RED);
+            DrawText("Enter the third message", 50, 270, 20, WHITE);
             DrawRectangleRec(thirdBox.bounds, LIGHTGRAY);
-            if (thirdBox.isSelected) DrawRectangleLinesEx(thirdBox.bounds, 2, RED);
+            if (thirdBox.isSelected) DrawRectangleLinesEx(thirdBox.bounds, 4, PURPLE);
             DrawText(thirdBox.text, thirdBox.bounds.x + 5, thirdBox.bounds.y + 10, 20, BLACK);
 
             // Draw build button
-            DrawRectangleRec(buildButton, RED);
+            DrawRectangleRec(buildButton, PINK);
             DrawText("Build", buildButton.x + 25, buildButton.y + 10, 20, WHITE);
 
         EndDrawing();

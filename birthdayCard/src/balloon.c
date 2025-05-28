@@ -1,6 +1,7 @@
 #include "../include/balloon.h"
 #include "../include/config.h"
 #include <math.h>
+#include <raylib.h>
 
 // Initialize balloons with random positions, sizes, and colors
 void InitializeBalloons(Balloon balloons[], int maxBalloons, int screenWidth, int screenHeight) {
@@ -11,12 +12,16 @@ void InitializeBalloons(Balloon balloons[], int maxBalloons, int screenWidth, in
         balloons[i].speed = GetRandomValue(1, 3);
 
         // Vibrant random colors for balloons
-        int colorIndex = GetRandomValue(0, 3);
+        int colorIndex = GetRandomValue(0, 7);
         switch (colorIndex) {
             case 0: balloons[i].color = RED; break;
             case 1: balloons[i].color = PURPLE; break;
-            case 2: balloons[i].color = MAGENTA; break;
-            case 3: balloons[i].color = PINK; break;
+            case 2: balloons[i].color = PINK; break;
+            case 3: balloons[i].color = GREEN; break;
+            case 4: balloons[i].color = LIME; break;
+            case 5: balloons[i].color = ORANGE; break;
+            case 6: balloons[i].color = YELLOW; break;
+            case 7: balloons[i].color = BLUE; break;
         }
     }
 }

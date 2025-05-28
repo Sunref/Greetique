@@ -2,8 +2,8 @@
 #define CONFIG_H
 
 // Screen dimensions
-#define SCREEN_WIDTH 850
-#define SCREEN_HEIGHT 550
+#define SCREEN_WIDTH 1024
+#define SCREEN_HEIGHT 658
 
 // Animation configuration
 #define MAX_BALLOONS 20
