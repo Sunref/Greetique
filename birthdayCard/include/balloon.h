@@ -3,11 +3,17 @@
 
 #include "raylib.h"
 
+typedef enum {
+    BALLOON_OVAL,
+    BALLOON_HEART
+} BalloonShape;
+
 typedef struct {
     Vector2 position;
     float radius;
     Color color;
     float speed;
+    BalloonShape shape;
 } Balloon;
 
 void InitializeBalloons(Balloon balloons[], int maxBalloons, int screenWidth, int screenHeight);

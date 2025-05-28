@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "raylib.h"
 #include <string.h>
+#include <time.h>
 #include "../include/config.h"
 #include "../include/messageInterface.h"
 
@@ -13,36 +14,40 @@ typedef struct {
     bool isSelected;
 } TextBox;
 
-int runMessageInterface(void) {
+int runMessageInterface(AnimationConfig* config) {
     // Initialize window
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Message Input Interface");
     SetTargetFPS(60);
 
     // Initialize text boxes
     TextBox titleBox = {
-        .bounds = (Rectangle){ 50, 100, 925, 40 },
+        .bounds = (Rectangle){ 50, 180, 925, 40 },
         .text = "",
         .letterCount = 0,
         .isSelected = false
     };
 
     TextBox secondaryBox = {
-        .bounds = (Rectangle){ 50, 200, 925, 40 },
+        .bounds = (Rectangle){ 50, 280, 925, 40 },
         .text = "",
         .letterCount = 0,
         .isSelected = false
     };
 
     TextBox thirdBox = {
-        .bounds = (Rectangle){ 50, 300, 925, 40 },
+        .bounds = (Rectangle){ 50, 380, 925, 40 },
         .text = "",
         .letterCount = 0,
         .isSelected = false
     };
 
+    // Checkbox para balões em forma de coração
+    Rectangle heartCheckbox = { 50, 450, 20, 20 };
+    bool useHeartBalloons = false;
+
     // Build button
     Rectangle buildButton = { 875, 575, 100, 40 };
-    int result = 0; // Return value: 0 = cancelled, 1 = messages saved
+    int result = 0;
 
     while (!WindowShouldClose()) {
         // Input handling
@@ -58,18 +63,30 @@ int runMessageInterface(void) {
             secondaryBox.isSelected = CheckCollisionPointRec(mousePoint, secondaryBox.bounds);
             thirdBox.isSelected = CheckCollisionPointRec(mousePoint, thirdBox.bounds);
 
+            // Check checkbox click
+            if (CheckCollisionPointRec(mousePoint, heartCheckbox)) {
+                useHeartBalloons = !useHeartBalloons;
+            }
+
             // Check if build button was clicked
             if (CheckCollisionPointRec(mousePoint, buildButton)) {
-                // Save messages to a configuration file
-                FILE* configFile = fopen("messages.txt", "w");
+                FILE* configFile = fopen("animation_config.txt", "w");
                 if (configFile != NULL) {
-                    fprintf(configFile, "%s\n%s\n%s",
+                    fprintf(configFile, "%s\n%s\n%s\n%d",
                         titleBox.text,
                         secondaryBox.text,
-                        thirdBox.text);
+                        thirdBox.text,
+                        useHeartBalloons ? 1 : 0);
                     fclose(configFile);
-                    result = 1; // Success
-                    break; // Exit the loop
+
+                    // Atualizar a estrutura de configuração
+                    strcpy(config->mainMessage, titleBox.text);
+                    strcpy(config->subMessage, secondaryBox.text);
+                    strcpy(config->thirdMessage, thirdBox.text);
+                    config->useHeartBalloons = useHeartBalloons;
+
+                    result = 1;
+                    break;
                 }
             }
         }
@@ -94,28 +111,48 @@ int runMessageInterface(void) {
 
         // Drawing
         BeginDrawing();
-
             Color background = { 25, 25, 50, 255 };
             ClearBackground(background);
 
-            // Draw title
-            DrawText("made by: sunref", SCREEN_WIDTH - 210, 10, 20, PINK);
+            // Draw title and timestamp
+            DrawText("made by: Sunref", SCREEN_WIDTH - 210, 10, 20, PINK);
+
+            // Draw helpful note in a box
+            Rectangle noteBox = (Rectangle){ 50, 50, 925, 80 };
+            DrawRectangleRec(noteBox, ColorAlpha(GRAY, 0.2f));
+            DrawRectangleLinesEx(noteBox, 1, ColorAlpha(WHITE, 0.3f));
+
+            // Draw note text
+            DrawText("Note:", 60, 60, 20, PINK);
+            DrawText("Create short messages (but full of emotion) as long messages will be cut off",
+                    120, 60, 20, WHITE);
+            DrawText("on screen; Use heart-shaped balloons option for your loved ones!",
+                    120, 85, 20, WHITE);
 
             // Draw text boxes and labels
-            DrawText("Enter the title message", 50, 70, 20, WHITE);
+            DrawText("Enter the title message", 50, 150, 20, WHITE);
             DrawRectangleRec(titleBox.bounds, LIGHTGRAY);
             if (titleBox.isSelected) DrawRectangleLinesEx(titleBox.bounds, 4, PURPLE);
             DrawText(titleBox.text, titleBox.bounds.x + 5, titleBox.bounds.y + 10, 20, BLACK);
 
-            DrawText("Enter the secondary message", 50, 170, 20, WHITE);
+            DrawText("Enter the secondary message", 50, 250, 20, WHITE);
             DrawRectangleRec(secondaryBox.bounds, LIGHTGRAY);
             if (secondaryBox.isSelected) DrawRectangleLinesEx(secondaryBox.bounds, 4, PURPLE);
             DrawText(secondaryBox.text, secondaryBox.bounds.x + 5, secondaryBox.bounds.y + 10, 20, BLACK);
 
-            DrawText("Enter the third message", 50, 270, 20, WHITE);
+            DrawText("Enter the third message", 50, 350, 20, WHITE);
             DrawRectangleRec(thirdBox.bounds, LIGHTGRAY);
             if (thirdBox.isSelected) DrawRectangleLinesEx(thirdBox.bounds, 4, PURPLE);
             DrawText(thirdBox.text, thirdBox.bounds.x + 5, thirdBox.bounds.y + 10, 20, BLACK);
+
+            // Draw heart balloon checkbox
+            DrawRectangleRec(heartCheckbox, LIGHTGRAY);
+            if (useHeartBalloons) {
+                DrawRectangle(heartCheckbox.x + 4, heartCheckbox.y + 4,
+                            heartCheckbox.width - 8, heartCheckbox.height - 8,
+                            PINK);
+            }
+            DrawText("Use heart-shaped balloons", heartCheckbox.x + 30, heartCheckbox.y + 1, 20, WHITE);
 
             // Draw build button
             DrawRectangleRec(buildButton, PINK);
