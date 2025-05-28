@@ -10,9 +10,9 @@
 #define MAX_STARS 50
 
 // Animation messages
-#define MAIN_MESSAGE "Happy Birthday!"
-#define SUB_MESSAGE "Your text here (short texts)"
-#define THIRD_MESSAGE "Subtext here. If necessary, resize the window"
+#define MAIN_MESSAGE
+#define SUB_MESSAGE
+#define THIRD_MESSAGE
 
 // Font sizes
 #define MAIN_FONT_SIZE 50

@@ -1,4 +1,4 @@
-#include "balloon.h"
+#include "../include/balloon.h"
 #include "../include/config.h"
 #include <math.h>
 

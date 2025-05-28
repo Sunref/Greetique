@@ -1,4 +1,4 @@
-#include "star.h"
+#include "../include/star.h"
 #include "../include/config.h"
 #include <math.h>
 

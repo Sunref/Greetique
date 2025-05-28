@@ -1,8 +1,9 @@
 #include "raylib.h"
-#include "balloon.h"
-#include "star.h"
-#include "animation.h"
+#include "../include/balloon.h"
+#include "../include/star.h"
+#include "../include/animation.h"
 #include "../include/messageInterface.h"
+#include "../include/messageLoader.h"
 #include "../include/config.h"
 
 int main() {
@@ -13,6 +14,9 @@ int main() {
     if (!messagesSaved) {
         return 0;
     }
+
+    // Load the messages from the file that was just saved
+    LoadMessagesFromFile();
 
     // Initialize window for the birthday animation
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Happy Birthday!");

@@ -10,35 +10,11 @@ BUILDDIR = build
 BINDIR = bin
 INCLUDEDIR = include
 
-<<<<<<< Updated upstream
-# Source files
-SRCS = $(wildcard $(SRC_DIR)/*.c)
-OBJS = $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SRCS))
-
-# Target
-TARGET = $(BIN_DIR)/birthday_animation
-
-# Create necessary directories
-$(shell mkdir -p $(BUILD_DIR) $(BIN_DIR))
-
-# Default target
-all: $(TARGET)
-
-# Link
-$(TARGET): $(OBJS)
-	$(CC) $^ -o $@ $(LDFLAGS)
-
-# Compile
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c $(INCLUDE_DIR)/*.h
-	$(CC) $(CFLAGS) -I$(INCLUDE_DIR) -c $< -o $@
-
-# Clean
-=======
 # Source files (todos os arquivos agora fazem parte do mesmo programa)
-SOURCES = $(SRCDIR)/main.c $(SRCDIR)/animation.c $(SRCDIR)/balloon.c $(SRCDIR)/star.c $(SRCDIR)/messageInterface.c
+SOURCES = $(SRCDIR)/main.c $(SRCDIR)/animation.c $(SRCDIR)/balloon.c $(SRCDIR)/star.c $(SRCDIR)/messageInterface.c $(SRCDIR)/messageLoader.c
 
 # Object files
-OBJECTS = $(BUILDDIR)/main.o $(BUILDDIR)/animation.o $(BUILDDIR)/balloon.o $(BUILDDIR)/star.o $(BUILDDIR)/messageInterface.o
+OBJECTS = $(BUILDDIR)/main.o $(BUILDDIR)/animation.o $(BUILDDIR)/balloon.o $(BUILDDIR)/star.o $(BUILDDIR)/messageInterface.o $(BUILDDIR)/messageLoader.o
 
 # Executable
 EXECUTABLE = $(BINDIR)/birthday_animation
@@ -62,17 +38,9 @@ $(BINDIR):
 	mkdir -p $(BINDIR)
 
 # Clean up
->>>>>>> Stashed changes
 clean:
 	rm -rf $(BUILDDIR)/*.o
 
-<<<<<<< Updated upstream
-# Run the program
-run: $(TARGET)
-	$(TARGET)
-
-.PHONY: all clean run
-=======
 clean-all:
 	rm -rf $(BUILDDIR) $(BINDIR)
 
@@ -101,4 +69,3 @@ help:
 
 # Phony targets
 .PHONY: all clean clean-all run install-deps debug help
->>>>>>> Stashed changes
