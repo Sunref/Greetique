@@ -3,20 +3,20 @@
 #include "../include/config.h"
 #include "../include/messageLoader.h"
 
-// Variáveis globais para armazenar as mensagens carregadas
+// Global variables to store loaded messages
 static char loadedMainMessage[256] = MAIN_MESSAGE "";
 static char loadedSubMessage[256] = SUB_MESSAGE "";
 static char loadedThirdMessage[256] = THIRD_MESSAGE "";
 static bool loadedUseHeartBalloons = false;
 
-// Função para carregar mensagens do arquivo
+// Function to load messages from file
 void LoadMessagesFromFile(AnimationConfig* config) {
     FILE* file = fopen("animation_config.txt", "r");
     if (file != NULL) {
         char tempBuffer[256];
         int heartBalloons = 0;
 
-        // Ler primeira linha (mensagem principal)
+        // Read first line (main message)
         if (fgets(tempBuffer, sizeof(tempBuffer), file) != NULL) {
             size_t len = strlen(tempBuffer);
             if (len > 0 && tempBuffer[len-1] == '\n') {
@@ -28,7 +28,7 @@ void LoadMessagesFromFile(AnimationConfig* config) {
             }
         }
 
-        // Ler segunda linha (mensagem secundária)
+        // Read second line (secondary message)
         if (fgets(tempBuffer, sizeof(tempBuffer), file) != NULL) {
             size_t len = strlen(tempBuffer);
             if (len > 0 && tempBuffer[len-1] == '\n') {
@@ -40,7 +40,7 @@ void LoadMessagesFromFile(AnimationConfig* config) {
             }
         }
 
-        // Ler terceira linha (terceira mensagem)
+        // Read third line (third message)
         if (fgets(tempBuffer, sizeof(tempBuffer), file) != NULL) {
             size_t len = strlen(tempBuffer);
             if (len > 0 && tempBuffer[len-1] == '\n') {
@@ -52,7 +52,7 @@ void LoadMessagesFromFile(AnimationConfig* config) {
             }
         }
 
-        // Ler configuração dos balões
+        // Read balloons configuration
         if (fscanf(file, "%d", &heartBalloons) == 1) {
             loadedUseHeartBalloons = heartBalloons != 0;
             config->useHeartBalloons = loadedUseHeartBalloons;

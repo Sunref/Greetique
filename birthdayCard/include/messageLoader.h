@@ -3,10 +3,10 @@
 
 #include "messageInterface.h"
 
-// Função para carregar mensagens do arquivo salvo
+// Function to load messages from saved file
 void LoadMessagesFromFile(AnimationConfig* config);
 
-// Funções para obter as mensagens carregadas
+// Functions to get loaded messages
 const char* GetMainMessage(void);
 const char* GetSubMessage(void);
 const char* GetThirdMessage(void);

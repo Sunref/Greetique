@@ -3,7 +3,7 @@
 
 #include "raylib.h"
 
-// Estrutura para armazenar as configurações da animação
+// Structure to store animation settings
 typedef struct {
     char mainMessage[256];
     char subMessage[256];
@@ -11,7 +11,7 @@ typedef struct {
     bool useHeartBalloons;
 } AnimationConfig;
 
-// Função para executar a interface de entrada de mensagens
+// Function to run the message input interface
 int runMessageInterface(AnimationConfig* config);
 
 #endif

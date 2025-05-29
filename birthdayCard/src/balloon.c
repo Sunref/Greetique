@@ -36,7 +36,7 @@ void DrawHeart(Vector2 position, float radius, Color color) {
     const int segments = 36;
     Vector2 points[segments];
 
-    // Gerar pontos da curva do coração
+    // Generate heart curve points
     for (int i = 0; i < segments; i++) {
         float t = i * 2 * PI / segments;
         float x = 16 * pow(sin(t), 3);
@@ -46,18 +46,18 @@ void DrawHeart(Vector2 position, float radius, Color color) {
         points[i].y = position.y + (y * radius / 16);
     }
 
-    // Desenhar o preenchimento do coração
+    // Draw heart filling
     for (int i = 1; i < segments - 1; i++) {
         DrawTriangle(points[0], points[i], points[i + 1], color);
     }
 
-    // Desenhar o contorno com uma cor ligeiramente mais escura
+    // Draw outline with a slightly darker color
     Color outlineColor = ColorBrightness(color, 0.7f);
     for (int i = 0; i < segments; i++) {
         DrawLineEx(
             points[i],
             points[(i + 1) % segments],
-            radius * 0.1f,  // Espessura do contorno
+            radius * 0.1f,  // Outline thickness
             outlineColor
         );
     }
@@ -96,7 +96,7 @@ void DrawBalloons(Balloon balloons[], int maxBalloons, float time) {
             (Vector2){balloons[i].position.x, balloons[i].position.y + balloons[i].radius * 1.3f},
             (Vector2){balloons[i].position.x + sin(time * 2 + i) * 10,
                      balloons[i].position.y + balloons[i].radius * 1.3f + 30},
-            2.0f,  // Espessura da linha
+            2.0f,  // Line thickness
             stringColor
         );
     }
