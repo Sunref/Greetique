@@ -28,7 +28,7 @@ int main() {
     // Initialize objects
     Balloon balloons[MAX_BALLOONS];
     Star stars[MAX_STARS];
-    InitializeBalloons(balloons, MAX_BALLOONS, SCREEN_WIDTH, SCREEN_HEIGHT);
+    InitializeBalloons(balloons, MAX_BALLOONS, SCREEN_WIDTH, SCREEN_HEIGHT, config.useHeartBalloons);
     InitializeStars(stars, MAX_STARS, SCREEN_WIDTH, SCREEN_HEIGHT);
 
     // Main loop

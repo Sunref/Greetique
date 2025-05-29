@@ -16,7 +16,7 @@ typedef struct {
     BalloonShape shape;
 } Balloon;
 
-void InitializeBalloons(Balloon balloons[], int maxBalloons, int screenWidth, int screenHeight);
+void InitializeBalloons(Balloon balloons[], int maxBalloons, int screenWidth, int screenHeight, bool useHeartBalloons);
 void UpdateBalloons(Balloon balloons[], int maxBalloons, int screenHeight, float time);
 void DrawBalloons(Balloon balloons[], int maxBalloons, float time);
 

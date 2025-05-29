@@ -4,15 +4,17 @@
 #include <raylib.h>
 
 // Initialize balloons with random positions, sizes, and colors
-void InitializeBalloons(Balloon balloons[], int maxBalloons, int screenWidth, int screenHeight) {
+void InitializeBalloons(Balloon balloons[], int maxBalloons, int screenWidth, int screenHeight, bool useHeartBalloons) {
     for (int i = 0; i < maxBalloons; i++) {
         balloons[i].position.x = GetRandomValue(50, screenWidth - 50);
         balloons[i].position.y = GetRandomValue(screenHeight, screenHeight + 300);
         balloons[i].radius = GetRandomValue(20, 40);
         balloons[i].speed = GetRandomValue(1, 3);
 
-        // Randomly choose between oval and heart shape
-        balloons[i].shape = GetRandomValue(0, 1) ? BALLOON_HEART : BALLOON_OVAL;
+        // Use heart shape only if useHeartBalloons is true
+        balloons[i].shape = useHeartBalloons ?
+            (GetRandomValue(0, 1) ? BALLOON_HEART : BALLOON_OVAL) : // 50% chance of heart if enabled
+            BALLOON_OVAL; // Always oval if hearts are disabled
 
         // Vibrant random colors for balloons
         int colorIndex = GetRandomValue(0, 7);
