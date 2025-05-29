@@ -1,2 +1,2 @@
 # Release Notes
-<!-- Add release notes for the next version here -->
+Update to run on linux without errors
