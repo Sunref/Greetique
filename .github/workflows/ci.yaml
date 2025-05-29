@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04  # Use older Ubuntu for better compatibility
 
     steps:
       - name: Checkout code
@@ -57,7 +57,8 @@ jobs:
           export C_INCLUDE_PATH=/usr/local/include
           export LIBRARY_PATH=/usr/local/lib
           make clean
-          make PLATFORM=LINUX
+          # Try static build first, fallback to dynamic if needed
+          make release PLATFORM=LINUX || make PLATFORM=LINUX
         env:
           C_INCLUDE_PATH: /usr/local/include
           LIBRARY_PATH: /usr/local/lib

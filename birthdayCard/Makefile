@@ -1,6 +1,6 @@
 # Compiler and flags
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c99 -pedantic -static
+CFLAGS = -Wall -Wextra -std=c99 -pedantic
 # Add quiet flag to suppress command output during build
 MAKEFLAGS += --silent
 
@@ -10,8 +10,8 @@ PLATFORM ?= LINUX
 ifeq ($(PLATFORM), LINUX)
     INCLUDES = -Iinclude
     LIBS = -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
-    # Static linking for better compatibility
-    LDFLAGS = -static-libgcc -Wl,--as-needed
+    # Force complete static linking for maximum compatibility
+    LDFLAGS = -static -static-libgcc -static-libstdc++
 endif
 
 ifeq ($(PLATFORM), WINDOWS)
@@ -100,6 +100,18 @@ windows:
 	@echo "Building for Windows..."
 	@$(MAKE) PLATFORM=WINDOWS --silent
 	@echo "Windows build completed!"
+
+# Build with musl for maximum compatibility (if available)
+musl:
+	@echo "Building with musl-gcc for maximum compatibility..."
+	@$(MAKE) CC=musl-gcc LDFLAGS="-static" --silent || echo "musl-gcc not available, use regular build"
+
+# Alternative static build
+static-alt:
+	@echo "Building alternative static version..."
+	@$(CC) $(CFLAGS) $(INCLUDES) $(SOURCES) -o $(EXECUTABLE) \
+		-Wl,-Bstatic $(LIBS) -Wl,-Bdynamic -static-libgcc
+	@echo "Alternative static build completed!"
 
 # Help
 help:
