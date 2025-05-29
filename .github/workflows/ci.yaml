@@ -20,8 +20,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          persist-credentials: true   # <-- permite push usando GITHUB_TOKEN
-      
+          persist-credentials: true
+
       - name: Install dependencies
         run: |
           sudo apt-get update
@@ -30,7 +30,7 @@ jobs:
             libxxf86vm-dev libgl1-mesa-dev libglu1-mesa-dev \
             libasound2-dev libopenal-dev libpng-dev zlib1g-dev \
             libxrandr-dev libxinerama-dev
-      
+
       - name: Download and install Raylib for Linux
         run: |
           git clone https://github.com/raysan5/raylib.git raylib-linux
@@ -44,7 +44,7 @@ jobs:
           sudo make install
           sudo ldconfig
           cd ../..
-      
+
       - name: Download latest Raylib for MinGW
         run: |
           LATEST_RELEASE=$(curl -s https://api.github.com/repos/raysan5/raylib/releases/latest | grep "browser_download_url.*win64_mingw-w64.zip" | cut -d '"' -f 4)
@@ -53,28 +53,40 @@ jobs:
 
       - name: Build for Linux
         run: |
+          cd birthdayCard
           export C_INCLUDE_PATH=/usr/local/include
           export LIBRARY_PATH=/usr/local/lib
-          gcc -o aniversario.bin aniversario.c -lraylib -lm -lpthread -ldl
+          make clean
+          make PLATFORM=LINUX
         env:
           C_INCLUDE_PATH: /usr/local/include
           LIBRARY_PATH: /usr/local/lib
 
       - name: Build for Windows using MinGW
         run: |
-          RAYLIB_DIR=$(find $(pwd)/raylib -maxdepth 1 -type d -name "raylib-*" | head -n 1)
+          cd birthdayCard
+          RAYLIB_DIR=$(find $(pwd)/../raylib -maxdepth 1 -type d -name "raylib-*" | head -n 1)
           echo "Usando Raylib em: $RAYLIB_DIR"
-          x86_64-w64-mingw32-gcc -o aniversario.exe aniversario.c -I${RAYLIB_DIR}/include -L${RAYLIB_DIR}/lib -lraylib -lopengl32 -lgdi32 -lwinmm
+          
+          # Compile all source files for Windows
+          x86_64-w64-mingw32-gcc -c src/main.c -o build/main_win.o -Iinclude -I${RAYLIB_DIR}/include
+          x86_64-w64-mingw32-gcc -c src/animation.c -o build/animation_win.o -Iinclude -I${RAYLIB_DIR}/include
+          x86_64-w64-mingw32-gcc -c src/balloon.c -o build/balloon_win.o -Iinclude -I${RAYLIB_DIR}/include
+          x86_64-w64-mingw32-gcc -c src/star.c -o build/star_win.o -Iinclude -I${RAYLIB_DIR}/include
+          x86_64-w64-mingw32-gcc -c src/messageInterface.c -o build/messageInterface_win.o -Iinclude -I${RAYLIB_DIR}/include
+          x86_64-w64-mingw32-gcc -c src/messageLoader.c -o build/messageLoader_win.o -Iinclude -I${RAYLIB_DIR}/include
+          
+          # Link all objects into final executable
+          x86_64-w64-mingw32-gcc -o bin/birthday_animation.exe build/*_win.o -L${RAYLIB_DIR}/lib -lraylib -lopengl32 -lgdi32 -lwinmm
 
       - name: Copy executables to release folder
         run: |
           mkdir -p releases
-          cp aniversario.bin releases/aniversario-linux.bin
-          cp aniversario.exe releases/aniversario.exe
-          # Set executable permissions for the Linux binary
-          chmod +x releases/aniversario-linux.bin
-          # Windows .exe files don't need +x permissions in Linux, but marking them anyway
-          chmod +x releases/aniversario.exe
+          cp birthdayCard/bin/birthday_animation releases/birthday_animation-linux
+          cp birthdayCard/bin/birthday_animation.exe releases/birthday_animation.exe
+          # Set executable permissions
+          chmod +x releases/birthday_animation-linux
+          chmod +x releases/birthday_animation.exe
 
       - name: Configure Git user for tagging
         run: |
@@ -86,8 +98,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           LAST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1) 2>/dev/null || echo "v0.0.0")
-          NEW_TAG=$(echo $LAST_TAG | awk -F. '{$NF++; print $1"."$2"."$NF}')
-          TAG_NAME="$NEW_TAG"
+          
+          # Check if we're starting from v0.x.x versions, if so, jump to v1.0.0
+          if [[ $LAST_TAG == v0.* ]]; then
+            TAG_NAME="v1.0.0"
+          else
+            # Normal semantic versioning for v1.x.x and above
+            NEW_TAG=$(echo $LAST_TAG | awk -F. '{$NF++; print $1"."$2"."$NF}')
+            TAG_NAME="$NEW_TAG"
+          fi
 
           if [ -f release-notes.md ]; then
             TAG_MESSAGE=$(cat release-notes.md)
@@ -98,7 +117,7 @@ jobs:
           git tag -a "$TAG_NAME" -m "$TAG_MESSAGE"
           git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
           git push origin "$TAG_NAME"
-      
+
       - name: Create GitHub Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -115,8 +134,8 @@ jobs:
           gh release create $LAST_TAG \
             --title "Birthday Card Release $LAST_TAG" \
             --notes "$RELEASE_BODY" \
-            ./releases/aniversario-linux.bin \
-            ./releases/aniversario.exe
+            ./releases/birthday_animation-linux \
+            ./releases/birthday_animation.exe
 
       - name: Clear release notes for next version
         run: |
