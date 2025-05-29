@@ -13,8 +13,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04  # Use older Ubuntu for better compatibility
-
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -29,7 +28,8 @@ jobs:
             libx11-dev libxcursor-dev libxi-dev \
             libxxf86vm-dev libgl1-mesa-dev libglu1-mesa-dev \
             libasound2-dev libopenal-dev libpng-dev zlib1g-dev \
-            libxrandr-dev libxinerama-dev
+            libxrandr-dev libxinerama-dev \
+            mesa-common-dev libglfw3-dev pkg-config
 
       - name: Download and install Raylib for Linux
         run: |
@@ -56,9 +56,12 @@ jobs:
           cd birthdayCard
           export C_INCLUDE_PATH=/usr/local/include
           export LIBRARY_PATH=/usr/local/lib
+          export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
           make clean
-          # Try static build first, fallback to dynamic if needed
-          make release PLATFORM=LINUX || make PLATFORM=LINUX
+          # Debug libraries first
+          make debug-libs || true
+          # Try different build approaches
+          make release PLATFORM=LINUX || make PLATFORM=LINUX || make debug PLATFORM=LINUX
         env:
           C_INCLUDE_PATH: /usr/local/include
           LIBRARY_PATH: /usr/local/lib

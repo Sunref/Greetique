@@ -9,9 +9,10 @@ PLATFORM ?= LINUX
 
 ifeq ($(PLATFORM), LINUX)
     INCLUDES = -Iinclude
-    LIBS = -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
-    # Force complete static linking for maximum compatibility
-    LDFLAGS = -static -static-libgcc -static-libstdc++
+    # Updated library linking order and names for better compatibility
+    LIBS = -lraylib -lm -lpthread -ldl -lrt -lX11 -lXrandr -lXinerama -lXi -lXxf86vm -lXcursor -lGL
+    # Try static linking, but allow fallback to dynamic
+    LDFLAGS = -static-libgcc
 endif
 
 ifeq ($(PLATFORM), WINDOWS)
@@ -112,6 +113,15 @@ static-alt:
 	@$(CC) $(CFLAGS) $(INCLUDES) $(SOURCES) -o $(EXECUTABLE) \
 		-Wl,-Bstatic $(LIBS) -Wl,-Bdynamic -static-libgcc
 	@echo "Alternative static build completed!"
+
+# Debug library linking
+debug-libs:
+	@echo "Checking available libraries..."
+	@pkg-config --libs raylib || echo "raylib not found via pkg-config"
+	@ldconfig -p | grep -E "(GL|raylib)" || echo "OpenGL/raylib libraries not found"
+	@echo "Attempting simple link test..."
+	@$(CC) -o test_link $(SOURCES) $(INCLUDES) -lraylib -lGL -lm -lpthread -ldl -lrt -lX11 -lXrandr -lXinerama -lXi -lXxf86vm -lXcursor || echo "Link test failed"
+	@rm -f test_link
 
 # Help
 help:
