@@ -54,7 +54,7 @@ jobs:
 
       - name: Build for Linux
         run: |
-          cd birthdayCard
+          cd MessageCard
           export C_INCLUDE_PATH=/usr/local/include
           export LIBRARY_PATH=/usr/local/lib
           export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
@@ -69,7 +69,7 @@ jobs:
 
       - name: Build for Windows using MinGW
         run: |
-          cd birthdayCard
+          cd MessageCard
           RAYLIB_DIR=$(find $(pwd)/../raylib -maxdepth 1 -type d -name "raylib-*" | head -n 1)
           echo "Usando Raylib em: $RAYLIB_DIR"
           
@@ -87,8 +87,8 @@ jobs:
       - name: Copy executables to release folder
         run: |
           mkdir -p releases
-          cp birthdayCard/bin/birthday_animation releases/birthday_animation-linux
-          cp birthdayCard/bin/birthday_animation.exe releases/birthday_animation.exe
+          cp MessageCard/bin/message_animation releases/message_animation-linux
+          cp MessageCard/bin/message_animation.exe releases/message_animation.exe
           # Set executable permissions
           chmod +x releases/birthday_animation-linux
           chmod +x releases/birthday_animation.exe

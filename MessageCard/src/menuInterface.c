@@ -78,7 +78,7 @@ int runMenuInterface(void) {
             ClearBackground(background);
 
             // Draw title
-            DrawText("Birthday Card Creator",
+            DrawText("Message Card Creator",
                     (SCREEN_WIDTH - MeasureText("Card Creator", 40)) / 2,
                     100, 40, WHITE);
 

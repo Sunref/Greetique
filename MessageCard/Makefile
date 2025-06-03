@@ -35,7 +35,7 @@ SOURCES = $(SRCDIR)/main.c $(SRCDIR)/animation.c $(SRCDIR)/balloon.c $(SRCDIR)/s
 OBJECTS = $(BUILDDIR)/main.o $(BUILDDIR)/animation.o $(BUILDDIR)/balloon.o $(BUILDDIR)/star.o $(BUILDDIR)/messageInterface.o $(BUILDDIR)/messageLoader.o $(BUILDDIR)/menuInterface.o
 
 # Executable
-EXECUTABLE = $(BINDIR)/birthday_animation
+EXECUTABLE = $(BINDIR)/message_animation
 
 # Default target
 all: $(EXECUTABLE)
@@ -69,12 +69,12 @@ clean-all:
 
 # Run the program (suppress terminal output)
 run: $(EXECUTABLE)
-	@echo "Running birthday animation..."
+	@echo "Running message animation..."
 	@./$(EXECUTABLE) > /dev/null 2>&1
 
 # Run the program with visible output (for debugging)
 run-verbose: $(EXECUTABLE)
-	@echo "Running birthday animation (verbose mode)..."
+	@echo "Running message animation (verbose mode)..."
 	@./$(EXECUTABLE)
 
 # Install dependencies (example for Ubuntu/Debian)

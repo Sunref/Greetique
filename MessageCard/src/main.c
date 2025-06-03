@@ -19,13 +19,13 @@ int main() {
 
             case 1: // Write new message
                 if (runMessageInterface(&config)) {
-                    RunBirthdayAnimation(&config, 1);  // 1 indicates it came from the write interface
+                    RunMessageAnimation(&config, 1);  // 1 indicates it came from the write interface
                 }
                 break;
 
             case 2: // Read existing message
                 if (LoadMessagesFromFile(&config)) {
-                    RunBirthdayAnimation(&config, 0);  // 0 indicates it did not come from the write interface
+                    RunMessageAnimation(&config, 0);  // 0 indicates it did not come from the write interface
                 } else {
                     const int screenWidth = 400;
                     const int screenHeight = 200;

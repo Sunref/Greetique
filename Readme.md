@@ -12,7 +12,7 @@ Created as a simple birthday gift, the project evolved so that any user could cr
 
 - Colorful animated balloons that float upward
 - Twinkling star background
-- Customizable birthday message
+- Customizable message
 - Menu interface for choosing between Write and Read modes
 - Message editing with return button in animation screen
 - Direct animation preview after editing
@@ -22,12 +22,12 @@ Created as a simple birthday gift, the project evolved so that any user could cr
 ## Project Structure
 
 ```
-birthdayCard/
+MessageCard/
 ├── animation_config.txt    # File where interface configurations are saved
 ├── saved_cards/            # Save specific messages here
 ├── assets/                 # Project resources
 ├── bin/
-│   └── birthday_animation  # Compiled executable
+│   └── message_animation   # Compiled executable
 ├── build/                  # Compiled object files
 ├── include/                # Project headers
 │   ├── animation.h
@@ -75,7 +75,7 @@ You can share your created card with others. The message is stored in the `saved
 
 #### For Linux Users
 1. Locate your card:
-   - Find the `birthday_animation` executable in the `bin/` directory
+   - Find the `message_animation` executable in the `bin/` directory
    - Locate your saved message in `saved_cards/`
 2. Share both files:
    - Send both the executable and your saved message file
@@ -87,7 +87,7 @@ You can share your created card with others. The message is stored in the `saved
 
 #### For Windows Users
 1. Get the latest release:
-   - Go to the [Releases](https://github.com/Sunref/Birthday-Card/releases) page
+   - Go to the [Releases](https://github.com/Sunref/Message-Card/releases) page
    - Download the Windows executable (.exe)
 2. Share your card:
    - Send your saved message file from `saved_cards/`

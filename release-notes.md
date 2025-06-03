@@ -10,7 +10,7 @@
 ## 🔧 Technical Improvements
 - Restructured message editing workflow
 - Optimized animation rendering process
-- Fixed multiple definition error in RunBirthdayAnimation function
+- Fixed multiple definition error in RunMessageAnimation function
 - Improved message persistence between edits
 
 ## 📚 Documentation
@@ -26,7 +26,7 @@
 
 ## 📋 Installation Instructions
 ### Linux
-- Download the latest `birthday_animation` executable
+- Download the latest `message_animation` executable
 - Place your message file in `saved_cards/`
 - Run the executable and select "Read a message"
 

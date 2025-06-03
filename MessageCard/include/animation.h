@@ -6,6 +6,6 @@
 
 // Functions for text animation
 void DrawAnimatedText(float time, const AnimationConfig* config);
-void RunBirthdayAnimation(AnimationConfig* config, int fromWriteInterface);
+void RunMessageAnimation(AnimationConfig* config, int fromWriteInterface);
 
 #endif

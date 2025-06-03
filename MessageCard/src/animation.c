@@ -10,7 +10,7 @@
 #define BACK_BUTTON_HEIGHT 32
 #define BACK_BUTTON_PADDING 20
 
-// Draw birthday message with animated color effects
+// Draw message with animated color effects
 void DrawAnimatedText(float currentTime, const AnimationConfig* config) {
     // Add animation effects
     float bounce = sin(currentTime * 2.0f) * 5.0f;
@@ -41,8 +41,8 @@ void DrawAnimatedText(float currentTime, const AnimationConfig* config) {
     }
 }
 
-void RunBirthdayAnimation(AnimationConfig* config, int fromWriteInterface) {
-    // Initialize window for birthday animation
+void RunMessageAnimation(AnimationConfig* config, int fromWriteInterface) {
+    // Initialize window for message animation
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Message Card!");
     SetTargetFPS(60);
 
@@ -74,7 +74,7 @@ void RunBirthdayAnimation(AnimationConfig* config, int fromWriteInterface) {
                 if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON)) {
                     CloseWindow();
                     if (runMessageInterface(config)) {
-                        RunBirthdayAnimation(config, 1);  // Call animation directly after editing
+                        RunMessageAnimation(config, 1);  // Call animation directly after editing
                     }
                     return;
                 }
