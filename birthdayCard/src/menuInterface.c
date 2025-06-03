@@ -79,7 +79,7 @@ int runMenuInterface(void) {
 
             // Draw title
             DrawText("Birthday Card Creator",
-                    (SCREEN_WIDTH - MeasureText("Birthday Card Creator", 40)) / 2,
+                    (SCREEN_WIDTH - MeasureText("Card Creator", 40)) / 2,
                     100, 40, WHITE);
 
             // Draw subtitle
