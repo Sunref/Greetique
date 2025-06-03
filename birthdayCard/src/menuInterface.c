@@ -2,8 +2,6 @@
 #include <string.h>
 #include "raylib.h"
 #include "../include/config.h"
-#include "../include/messageInterface.h"
-#include "../include/animation.h"
 
 #define BUTTON_WIDTH 200
 #define BUTTON_HEIGHT 50
@@ -46,7 +44,7 @@ int runMenuInterface(void) {
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
             if (readHovered) {
                 CloseWindow();
-                // Carregar e executar a animação diretamente
+                // Load and run the animation directly
                 AnimationConfig config = {0};
                 FILE* configFile = fopen("animation_config.txt", "r");
                 if (configFile != NULL) {

@@ -5,7 +5,7 @@
 #include <math.h>
 #include <string.h>
 
-// Definições para o botão de voltar
+// Definitions for back button
 #define BACK_BUTTON_WIDTH 32
 #define BACK_BUTTON_HEIGHT 32
 #define BACK_BUTTON_PADDING 20
@@ -46,7 +46,7 @@ void RunBirthdayAnimation(AnimationConfig* config, int fromWriteInterface) {
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Message Card!");
     SetTargetFPS(60);
 
-    // Criar retângulo para o botão de voltar
+    // Create rectangle for back button
     Rectangle backButton = {
         BACK_BUTTON_PADDING,
         BACK_BUTTON_PADDING,
@@ -67,14 +67,14 @@ void RunBirthdayAnimation(AnimationConfig* config, int fromWriteInterface) {
         UpdateBalloons(balloons, MAX_BALLOONS, SCREEN_HEIGHT, currentTime);
         UpdateStars(stars, MAX_STARS, currentTime);
 
-        // Verificar clique no botão de voltar (apenas se veio da interface de escrita)
+        // Check click on back button (only if coming from write interface)
         if (fromWriteInterface) {
             Vector2 mousePoint = GetMousePosition();
             if (CheckCollisionPointRec(mousePoint, backButton)) {
                 if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON)) {
                     CloseWindow();
                     if (runMessageInterface(config)) {
-                        RunBirthdayAnimation(config, 1);  // Chama a animação diretamente após editar
+                        RunBirthdayAnimation(config, 1);  // Call animation directly after editing
                     }
                     return;
                 }
@@ -90,15 +90,15 @@ void RunBirthdayAnimation(AnimationConfig* config, int fromWriteInterface) {
             DrawBalloons(balloons, MAX_BALLOONS, currentTime);
             DrawAnimatedText(currentTime, config);
 
-            // Desenhar botão de voltar apenas se veio da interface de escrita
+            // Draw back button only if coming from write interface
             if (fromWriteInterface) {
-                // Desenhar o fundo do botão
+                // Draw button background
                 Vector2 mousePoint = GetMousePosition();
                 bool isHovered = CheckCollisionPointRec(mousePoint, backButton);
 
                 DrawRectangleRec(backButton, isHovered ? (Color){255, 192, 203, 255} : (Color){255, 182, 193, 200});
 
-                // Desenhar a seta de voltar
+                // Draw back arrow
                 Vector2 points[3] = {
                     {backButton.x + backButton.width * 0.7f, backButton.y + backButton.height * 0.2f},
                     {backButton.x + backButton.width * 0.3f, backButton.y + backButton.height * 0.5f},

@@ -2,29 +2,29 @@
 #include <stdio.h>
 #include <string.h>
 
-// Buffer para as mensagens carregadas
+// Buffer for loaded messages
 static char loadedMainMessage[256] = "";
 static char loadedSubMessage[256] = "";
 static char loadedThirdMessage[256] = "";
 
-// Função para carregar mensagens do arquivo
+// Function to load messages from file
 int LoadMessagesFromFile(AnimationConfig* config) {
     FILE* file = fopen("animation_config.txt", "r");
     if (file == NULL) {
-        return 0;  // Falha ao abrir o arquivo
+        return 0;  // Failed to open file
     }
 
-    // Limpa os buffers
+    // Clear buffers
     memset(loadedMainMessage, 0, sizeof(loadedMainMessage));
     memset(loadedSubMessage, 0, sizeof(loadedSubMessage));
     memset(loadedThirdMessage, 0, sizeof(loadedThirdMessage));
 
-    // Lê as mensagens do arquivo
+    // Read messages from file
     char buffer[256];
 
-    // Lê a mensagem principal
+    // Read main message
     if (fgets(buffer, sizeof(buffer), file)) {
-        buffer[strcspn(buffer, "\n")] = 0;  // Remove o \n
+        buffer[strcspn(buffer, "\n")] = 0;  // Remove the \n
         strncpy(config->mainMessage, buffer, MAX_MESSAGE_LENGTH - 1);
         config->mainMessage[MAX_MESSAGE_LENGTH - 1] = '\0';
     } else {
@@ -32,7 +32,7 @@ int LoadMessagesFromFile(AnimationConfig* config) {
         return 0;
     }
 
-    // Lê a mensagem secundária
+    // Read secondary message
     if (fgets(buffer, sizeof(buffer), file)) {
         buffer[strcspn(buffer, "\n")] = 0;  // Remove o \n
         strncpy(config->subMessage, buffer, MAX_MESSAGE_LENGTH - 1);
@@ -42,7 +42,7 @@ int LoadMessagesFromFile(AnimationConfig* config) {
         return 0;
     }
 
-    // Lê a terceira mensagem
+    // Read third message
     if (fgets(buffer, sizeof(buffer), file)) {
         buffer[strcspn(buffer, "\n")] = 0;  // Remove o \n
         strncpy(config->thirdMessage, buffer, MAX_MESSAGE_LENGTH - 1);
@@ -52,7 +52,7 @@ int LoadMessagesFromFile(AnimationConfig* config) {
         return 0;
     }
 
-    // Lê a configuração dos balões
+    // Read balloons configuration
     int heartBalloons;
     if (fscanf(file, "%d", &heartBalloons) == 1) {
         config->useHeartBalloons = heartBalloons != 0;
@@ -62,10 +62,10 @@ int LoadMessagesFromFile(AnimationConfig* config) {
     }
 
     fclose(file);
-    return 1;  // Sucesso
+    return 1;  // Success
 }
 
-// Funções getter para as mensagens
+// Getter functions for messages
 const char* GetMainMessage() {
     return loadedMainMessage;
 }

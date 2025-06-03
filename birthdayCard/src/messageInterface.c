@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include "raylib.h"
 #include <string.h>
-#include <time.h>
 #include "../include/config.h"
 #include "../include/messageInterface.h"
 #include <sys/stat.h>
@@ -27,28 +26,28 @@ void loadExistingConfig(TextBox* titleBox, TextBox* secondaryBox, TextBox* third
     if (configFile != NULL) {
         char buffer[MAX_INPUT_LENGTH];
 
-        // Lê a mensagem principal
+        // Read the main message
         if (fgets(buffer, sizeof(buffer), configFile)) {
-            buffer[strcspn(buffer, "\n")] = 0;  // Remove o \n
+            buffer[strcspn(buffer, "\n")] = 0;  // Remove the \n
             strcpy(titleBox->text, buffer);
             titleBox->letterCount = strlen(buffer);
         }
 
-        // Lê a mensagem secundária
+        // Read the secondary message
         if (fgets(buffer, sizeof(buffer), configFile)) {
             buffer[strcspn(buffer, "\n")] = 0;
             strcpy(secondaryBox->text, buffer);
             secondaryBox->letterCount = strlen(buffer);
         }
 
-        // Lê a terceira mensagem
+        // Read the third message
         if (fgets(buffer, sizeof(buffer), configFile)) {
             buffer[strcspn(buffer, "\n")] = 0;
             strcpy(thirdBox->text, buffer);
             thirdBox->letterCount = strlen(buffer);
         }
 
-        // Lê a configuração dos balões
+        // Read the balloons configuration
         int heartBalloons;
         if (fscanf(configFile, "%d", &heartBalloons) == 1) {
             *useHeartBalloons = heartBalloons != 0;
@@ -62,7 +61,7 @@ void saveCardToArchive(const char* cardName, const AnimationConfig* config) {
     char folderPath[512];
     char filePath[512];
 
-    // Cria o caminho da pasta saved_cards se não existir
+    // Create saved_cards folder path if it doesn't exist
     #ifdef _WIN32
     MKDIR("saved_cards");
     snprintf(folderPath, sizeof(folderPath), "saved_cards\\%s", cardName);
@@ -75,7 +74,7 @@ void saveCardToArchive(const char* cardName, const AnimationConfig* config) {
     snprintf(filePath, sizeof(filePath), "%s/animation_config.txt", folderPath);
     #endif
 
-    // Salva o arquivo de configuração na pasta do cartão
+    // Save configuration file in the card folder
     FILE* configFile = fopen(filePath, "w");
     if (configFile != NULL) {
         fprintf(configFile, "%s\n%s\n%s\n%d",
@@ -118,7 +117,7 @@ int runMessageInterface(AnimationConfig* config) {
     Rectangle heartCheckbox = { 50, 450, 20, 20 };
     bool useHeartBalloons = false;
 
-    // Carregar configuração existente
+    // Load existing configuration
     loadExistingConfig(&titleBox, &secondaryBox, &thirdBox, &useHeartBalloons);
 
     // Build button
@@ -127,7 +126,7 @@ int runMessageInterface(AnimationConfig* config) {
     // Save button
     Rectangle saveButton = { 750, 575, 100, 40 };
 
-    // Variáveis para salvar cartão
+    // Variables for saving card
     char cardName[256] = "";
     bool showNameInput = false;
 
@@ -135,7 +134,7 @@ int runMessageInterface(AnimationConfig* config) {
     Vector2 mousePoint = { 0.0f, 0.0f };
 
     while (!WindowShouldClose()) {
-        // Atualizar posição do mouse
+        // Update mouse position
         mousePoint = GetMousePosition();
 
         // Input handling
@@ -145,7 +144,7 @@ int runMessageInterface(AnimationConfig* config) {
         if (thirdBox.isSelected) selectedBox = &thirdBox;
 
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-            if (!showNameInput) {  // Só permite clicar nos elementos se não estiver mostrando input de nome
+            if (!showNameInput) {  // Only allows clicking elements if not showing name input
                 titleBox.isSelected = CheckCollisionPointRec(mousePoint, titleBox.bounds);
                 secondaryBox.isSelected = CheckCollisionPointRec(mousePoint, secondaryBox.bounds);
                 thirdBox.isSelected = CheckCollisionPointRec(mousePoint, thirdBox.bounds);
@@ -166,7 +165,7 @@ int runMessageInterface(AnimationConfig* config) {
                             useHeartBalloons ? 1 : 0);
                         fclose(configFile);
 
-                        // Atualizar a estrutura de configuração
+                        // Update configuration structure
                         strcpy(config->mainMessage, titleBox.text);
                         strcpy(config->subMessage, secondaryBox.text);
                         strcpy(config->thirdMessage, thirdBox.text);
@@ -186,7 +185,7 @@ int runMessageInterface(AnimationConfig* config) {
 
         // Text input handling
         if (showNameInput) {
-            // Captura o nome do cartão
+            // Capture the card name
             int key = GetCharPressed();
             while (key > 0) {
                 if ((key >= 32) && (key <= 125) && (strlen(cardName) < 255)) {

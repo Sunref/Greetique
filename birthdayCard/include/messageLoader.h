@@ -3,10 +3,10 @@
 
 #include "config.h"
 
-// Função para carregar mensagens do arquivo
+// Function to load messages from file
 int LoadMessagesFromFile(AnimationConfig* config);
 
-// Funções getter para as mensagens
+// Getter functions for messages
 const char* GetMainMessage(void);
 const char* GetSubMessage(void);
 const char* GetThirdMessage(void);

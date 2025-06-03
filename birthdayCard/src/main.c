@@ -1,6 +1,4 @@
 #include "raylib.h"
-#include "../include/balloon.h"
-#include "../include/star.h"
 #include "../include/animation.h"
 #include "../include/messageInterface.h"
 #include "../include/messageLoader.h"
@@ -21,13 +19,13 @@ int main() {
 
             case 1: // Write new message
                 if (runMessageInterface(&config)) {
-                    RunBirthdayAnimation(&config, 1);  // 1 indica que veio da interface de escrita
+                    RunBirthdayAnimation(&config, 1);  // 1 indicates it came from the write interface
                 }
                 break;
 
             case 2: // Read existing message
                 if (LoadMessagesFromFile(&config)) {
-                    RunBirthdayAnimation(&config, 0);  // 0 indica que não veio da interface de escrita
+                    RunBirthdayAnimation(&config, 0);  // 0 indicates it did not come from the write interface
                 } else {
                     const int screenWidth = 400;
                     const int screenHeight = 200;
