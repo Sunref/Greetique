@@ -57,59 +57,59 @@ birthdayCard/
    make
    make run
    ```
-   4. **Configure your message** through the application interface:
-      - Choose between Write (new message) or Read (saved messages) mode
-      - In Write mode:
-        - Customize your message
-        - Preview the animation
-        - Use the return button to edit your message
-        - Changes are previewed instantly
-      - In Read mode:
-        - View your saved messages with full animation
-   5. **Your message will be saved** automatically in the `animation_config.txt` file
+4. **Configure your message** through the application interface:
+   - Choose between Write (new message) or Read (saved messages) mode
+   - In Write mode:
+     - Customize your message
+     - Preview the animation
+     - Use the return button to edit your message
+     - Changes are previewed instantly
+   - In Read mode:
+     - View your saved messages with full animation
+5. **Your message will be saved** automatically in the `animation_config.txt` file
 
-   ## How to Share
+## How to Share
 
-   ### Sending Your Card
-   You can share your created card with others. The message is stored in the `saved_cards/` directory.
+### Sending Your Card
+You can share your created card with others. The message is stored in the `saved_cards/` directory.
 
-   #### For Linux Users
-   1. Locate your card:
-      - Find the `birthday_animation` executable in the `bin/` directory
-      - Locate your saved message in `saved_cards/`
-   2. Share both files:
-      - Send both the executable and your saved message file
-      - Recipient should keep both files in the same directory
-   3. Recipients simply need to:
-      - Run the executable
-      - Click "Read a message"
-      - Enjoy your personalized animation!
+#### For Linux Users
+1. Locate your card:
+   - Find the `birthday_animation` executable in the `bin/` directory
+   - Locate your saved message in `saved_cards/`
+2. Share both files:
+   - Send both the executable and your saved message file
+   - Recipient should keep both files in the same directory
+3. Recipients simply need to:
+   - Run the executable
+   - Click "Read a message"
+   - Enjoy your personalized animation!
 
-   #### For Windows Users
-   1. Get the latest release:
-      - Go to the [Releases](https://github.com/Sunref/Birthday-Card/releases) page
-      - Download the Windows executable (.exe)
-   2. Share your card:
-      - Send your saved message file from `saved_cards/`
-      - Recipients should place the message file in the same directory as the .exe
-   3. Recipients simply need to:
-      - Run the .exe file
-      - Click "Read a message"
-      - The animation will play automatically!
+#### For Windows Users
+1. Get the latest release:
+   - Go to the [Releases](https://github.com/Sunref/Birthday-Card/releases) page
+   - Download the Windows executable (.exe)
+2. Share your card:
+   - Send your saved message file from `saved_cards/`
+   - Recipients should place the message file in the same directory as the .exe
+3. Recipients simply need to:
+   - Run the .exe file
+   - Click "Read a message"
+   - The animation will play automatically!
 
-   Note: Make sure both the executable and message file are in the same directory for the card to work properly.
+Note: Make sure both the executable and message file are in the same directory for the card to work properly.
 
-   ## Dependencies
+## Dependencies
 
-   - **Raylib** and derived libraries
-   - C compiler (gcc, mingw-w64 for Windows builds)
-   - Make
+- **Raylib** and derived libraries
+- C compiler (gcc, mingw-w64 for Windows builds)
+- Make
 
-   ## Credits
+## Credits
 
-   Created by Fernanda.
-   Built with [Raylib](https://www.raylib.com/).
+Created by Fernanda.
+Built with [Raylib](https://www.raylib.com/).
 
-   ## License
+## License
 
-   [MIT License](LICENSE)
+[MIT License](LICENSE)
