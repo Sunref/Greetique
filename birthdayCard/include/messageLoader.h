@@ -1,15 +1,14 @@
 #ifndef MESSAGE_LOADER_H
 #define MESSAGE_LOADER_H
 
-#include "messageInterface.h"
+#include "config.h"
 
-// Function to load messages from saved file
-void LoadMessagesFromFile(AnimationConfig* config);
+// Função para carregar mensagens do arquivo
+int LoadMessagesFromFile(AnimationConfig* config);
 
-// Functions to get loaded messages
+// Funções getter para as mensagens
 const char* GetMainMessage(void);
 const char* GetSubMessage(void);
 const char* GetThirdMessage(void);
-bool UseHeartBalloons(void);
 
 #endif

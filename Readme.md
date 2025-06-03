@@ -1,6 +1,6 @@
-# Birthday Card Animation
+# Card Animation
 
-An interactive birthday animation created with Raylib to celebrate special occasions. The app displays colorful animated balloons and stars with a personalized birthday message.
+An interactive card animation created with Raylib to celebrate special occasions. The app displays colorful animated balloons and stars with a personalized message.
 
 ![Screenshot of the app saying in ptbr "Feliz Aniversario Gabriel!!"](./Screenshot.png)
 
@@ -13,7 +13,9 @@ Created as a simple birthday gift, the project evolved so that any user could cr
 - Colorful animated balloons that float upward
 - Twinkling star background
 - Customizable birthday message
-- Interface for message configuration
+- Menu interface for choosing between Write and Read modes
+- Message editing with return button in animation screen
+- Direct animation preview after editing
 - Cross-platform support (Windows and Linux)
 - Automatic builds and releases through GitHub Actions
 
@@ -22,6 +24,7 @@ Created as a simple birthday gift, the project evolved so that any user could cr
 ```
 birthdayCard/
 ├── animation_config.txt    # File where interface configurations are saved
+├── saved_cards/            # Save specific messages here
 ├── assets/                 # Project resources
 ├── bin/
 │   └── birthday_animation  # Compiled executable
@@ -30,6 +33,7 @@ birthdayCard/
 │   ├── animation.h
 │   ├── balloon.h
 │   ├── config.h
+│   ├── menuInterface.h
 │   ├── messageInterface.h
 │   ├── messageLoader.h
 │   └── star.h
@@ -37,11 +41,11 @@ birthdayCard/
 │   ├── animation.c
 │   ├── balloon.c
 │   ├── main.c
+│   ├── menuInterface.c
 │   ├── messageInterface.c
 │   ├── messageLoader.c
 │   └── star.c
-├── Makefile
-└── README.md
+└── Makefile
 ```
 
 ## How to Use
@@ -53,22 +57,59 @@ birthdayCard/
    make
    make run
    ```
-4. **Configure your message** through the application interface
-5. **Your message will be saved** automatically in the `animation_config.txt` file
-6. **Commit** your changes to the project
-7. **GitHub Actions** will automatically generate an executable (.exe) for Windows
+   4. **Configure your message** through the application interface:
+      - Choose between Write (new message) or Read (saved messages) mode
+      - In Write mode:
+        - Customize your message
+        - Preview the animation
+        - Use the return button to edit your message
+        - Changes are previewed instantly
+      - In Read mode:
+        - View your saved messages with full animation
+   5. **Your message will be saved** automatically in the `animation_config.txt` file
 
-## Dependencies
+   ## How to Share
 
-- **Raylib** and derived libraries
-- C compiler (gcc, mingw-w64 for Windows builds)
-- Make
+   ### Sending Your Card
+   You can share your created card with others. The message is stored in the `saved_cards/` directory.
 
-## Credits
+   #### For Linux Users
+   1. Locate your card:
+      - Find the `birthday_animation` executable in the `bin/` directory
+      - Locate your saved message in `saved_cards/`
+   2. Share both files:
+      - Send both the executable and your saved message file
+      - Recipient should keep both files in the same directory
+   3. Recipients simply need to:
+      - Run the executable
+      - Click "Read a message"
+      - Enjoy your personalized animation!
 
-Created by Fernanda with assistance from Claude AI.
-Built with [Raylib](https://www.raylib.com/).
+   #### For Windows Users
+   1. Get the latest release:
+      - Go to the [Releases](https://github.com/Sunref/Birthday-Card/releases) page
+      - Download the Windows executable (.exe)
+   2. Share your card:
+      - Send your saved message file from `saved_cards/`
+      - Recipients should place the message file in the same directory as the .exe
+   3. Recipients simply need to:
+      - Run the .exe file
+      - Click "Read a message"
+      - The animation will play automatically!
 
-## License
+   Note: Make sure both the executable and message file are in the same directory for the card to work properly.
 
-[MIT License](LICENSE)
+   ## Dependencies
+
+   - **Raylib** and derived libraries
+   - C compiler (gcc, mingw-w64 for Windows builds)
+   - Make
+
+   ## Credits
+
+   Created by Fernanda.
+   Built with [Raylib](https://www.raylib.com/).
+
+   ## License
+
+   [MIT License](LICENSE)

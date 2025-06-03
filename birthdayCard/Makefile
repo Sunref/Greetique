@@ -28,11 +28,11 @@ BUILDDIR = build
 BINDIR = bin
 INCLUDEDIR = include
 
-# Source files (todos os arquivos agora fazem parte do mesmo programa)
-SOURCES = $(SRCDIR)/main.c $(SRCDIR)/animation.c $(SRCDIR)/balloon.c $(SRCDIR)/star.c $(SRCDIR)/messageInterface.c $(SRCDIR)/messageLoader.c
+# Source files
+SOURCES = $(SRCDIR)/main.c $(SRCDIR)/animation.c $(SRCDIR)/balloon.c $(SRCDIR)/star.c $(SRCDIR)/messageInterface.c $(SRCDIR)/messageLoader.c $(SRCDIR)/menuInterface.c
 
-# Object files
-OBJECTS = $(BUILDDIR)/main.o $(BUILDDIR)/animation.o $(BUILDDIR)/balloon.o $(BUILDDIR)/star.o $(BUILDDIR)/messageInterface.o $(BUILDDIR)/messageLoader.o
+# Object files (corrigido para incluir menuInterface.o)
+OBJECTS = $(BUILDDIR)/main.o $(BUILDDIR)/animation.o $(BUILDDIR)/balloon.o $(BUILDDIR)/star.o $(BUILDDIR)/messageInterface.o $(BUILDDIR)/messageLoader.o $(BUILDDIR)/menuInterface.o
 
 # Executable
 EXECUTABLE = $(BINDIR)/birthday_animation

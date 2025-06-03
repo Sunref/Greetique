@@ -1,79 +1,79 @@
+#include "../include/messageLoader.h"
 #include <stdio.h>
 #include <string.h>
-#include "../include/config.h"
-#include "../include/messageLoader.h"
 
-// Global variables to store loaded messages
-static char loadedMainMessage[256] = MAIN_MESSAGE "";
-static char loadedSubMessage[256] = SUB_MESSAGE "";
-static char loadedThirdMessage[256] = THIRD_MESSAGE "";
-static bool loadedUseHeartBalloons = false;
+// Buffer para as mensagens carregadas
+static char loadedMainMessage[256] = "";
+static char loadedSubMessage[256] = "";
+static char loadedThirdMessage[256] = "";
 
-// Function to load messages from file
-void LoadMessagesFromFile(AnimationConfig* config) {
+// Função para carregar mensagens do arquivo
+int LoadMessagesFromFile(AnimationConfig* config) {
     FILE* file = fopen("animation_config.txt", "r");
-    if (file != NULL) {
-        char tempBuffer[256];
-        int heartBalloons = 0;
-
-        // Read first line (main message)
-        if (fgets(tempBuffer, sizeof(tempBuffer), file) != NULL) {
-            size_t len = strlen(tempBuffer);
-            if (len > 0 && tempBuffer[len-1] == '\n') {
-                tempBuffer[len-1] = '\0';
-            }
-            if (strlen(tempBuffer) > 0) {
-                strcpy(loadedMainMessage, tempBuffer);
-                strcpy(config->mainMessage, tempBuffer);
-            }
-        }
-
-        // Read second line (secondary message)
-        if (fgets(tempBuffer, sizeof(tempBuffer), file) != NULL) {
-            size_t len = strlen(tempBuffer);
-            if (len > 0 && tempBuffer[len-1] == '\n') {
-                tempBuffer[len-1] = '\0';
-            }
-            if (strlen(tempBuffer) > 0) {
-                strcpy(loadedSubMessage, tempBuffer);
-                strcpy(config->subMessage, tempBuffer);
-            }
-        }
-
-        // Read third line (third message)
-        if (fgets(tempBuffer, sizeof(tempBuffer), file) != NULL) {
-            size_t len = strlen(tempBuffer);
-            if (len > 0 && tempBuffer[len-1] == '\n') {
-                tempBuffer[len-1] = '\0';
-            }
-            if (strlen(tempBuffer) > 0) {
-                strcpy(loadedThirdMessage, tempBuffer);
-                strcpy(config->thirdMessage, tempBuffer);
-            }
-        }
-
-        // Read balloons configuration
-        if (fscanf(file, "%d", &heartBalloons) == 1) {
-            loadedUseHeartBalloons = heartBalloons != 0;
-            config->useHeartBalloons = loadedUseHeartBalloons;
-        }
-
-        fclose(file);
+    if (file == NULL) {
+        return 0;  // Falha ao abrir o arquivo
     }
+
+    // Limpa os buffers
+    memset(loadedMainMessage, 0, sizeof(loadedMainMessage));
+    memset(loadedSubMessage, 0, sizeof(loadedSubMessage));
+    memset(loadedThirdMessage, 0, sizeof(loadedThirdMessage));
+
+    // Lê as mensagens do arquivo
+    char buffer[256];
+
+    // Lê a mensagem principal
+    if (fgets(buffer, sizeof(buffer), file)) {
+        buffer[strcspn(buffer, "\n")] = 0;  // Remove o \n
+        strncpy(config->mainMessage, buffer, MAX_MESSAGE_LENGTH - 1);
+        config->mainMessage[MAX_MESSAGE_LENGTH - 1] = '\0';
+    } else {
+        fclose(file);
+        return 0;
+    }
+
+    // Lê a mensagem secundária
+    if (fgets(buffer, sizeof(buffer), file)) {
+        buffer[strcspn(buffer, "\n")] = 0;  // Remove o \n
+        strncpy(config->subMessage, buffer, MAX_MESSAGE_LENGTH - 1);
+        config->subMessage[MAX_MESSAGE_LENGTH - 1] = '\0';
+    } else {
+        fclose(file);
+        return 0;
+    }
+
+    // Lê a terceira mensagem
+    if (fgets(buffer, sizeof(buffer), file)) {
+        buffer[strcspn(buffer, "\n")] = 0;  // Remove o \n
+        strncpy(config->thirdMessage, buffer, MAX_MESSAGE_LENGTH - 1);
+        config->thirdMessage[MAX_MESSAGE_LENGTH - 1] = '\0';
+    } else {
+        fclose(file);
+        return 0;
+    }
+
+    // Lê a configuração dos balões
+    int heartBalloons;
+    if (fscanf(file, "%d", &heartBalloons) == 1) {
+        config->useHeartBalloons = heartBalloons != 0;
+    } else {
+        fclose(file);
+        return 0;
+    }
+
+    fclose(file);
+    return 1;  // Sucesso
 }
 
-const char* GetMainMessage(void) {
+// Funções getter para as mensagens
+const char* GetMainMessage() {
     return loadedMainMessage;
 }
 
-const char* GetSubMessage(void) {
+const char* GetSubMessage() {
     return loadedSubMessage;
 }
 
-const char* GetThirdMessage(void) {
+const char* GetThirdMessage() {
     return loadedThirdMessage;
-}
-
-bool UseHeartBalloons(void) {
-    return loadedUseHeartBalloons;
 }

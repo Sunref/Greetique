@@ -4,6 +4,14 @@
 #include <time.h>
 #include "../include/config.h"
 #include "../include/messageInterface.h"
+#include <sys/stat.h>
+#ifdef _WIN32
+    #include <direct.h>
+    #define MKDIR(dir) _mkdir(dir)
+#else
+    #include <unistd.h>
+    #define MKDIR(dir) mkdir(dir, 0777)
+#endif
 
 #define MAX_INPUT_LENGTH 256
 
@@ -13,6 +21,71 @@ typedef struct {
     int letterCount;
     bool isSelected;
 } TextBox;
+
+void loadExistingConfig(TextBox* titleBox, TextBox* secondaryBox, TextBox* thirdBox, bool* useHeartBalloons) {
+    FILE* configFile = fopen("animation_config.txt", "r");
+    if (configFile != NULL) {
+        char buffer[MAX_INPUT_LENGTH];
+
+        // Lê a mensagem principal
+        if (fgets(buffer, sizeof(buffer), configFile)) {
+            buffer[strcspn(buffer, "\n")] = 0;  // Remove o \n
+            strcpy(titleBox->text, buffer);
+            titleBox->letterCount = strlen(buffer);
+        }
+
+        // Lê a mensagem secundária
+        if (fgets(buffer, sizeof(buffer), configFile)) {
+            buffer[strcspn(buffer, "\n")] = 0;
+            strcpy(secondaryBox->text, buffer);
+            secondaryBox->letterCount = strlen(buffer);
+        }
+
+        // Lê a terceira mensagem
+        if (fgets(buffer, sizeof(buffer), configFile)) {
+            buffer[strcspn(buffer, "\n")] = 0;
+            strcpy(thirdBox->text, buffer);
+            thirdBox->letterCount = strlen(buffer);
+        }
+
+        // Lê a configuração dos balões
+        int heartBalloons;
+        if (fscanf(configFile, "%d", &heartBalloons) == 1) {
+            *useHeartBalloons = heartBalloons != 0;
+        }
+
+        fclose(configFile);
+    }
+}
+
+void saveCardToArchive(const char* cardName, const AnimationConfig* config) {
+    char folderPath[512];
+    char filePath[512];
+
+    // Cria o caminho da pasta saved_cards se não existir
+    #ifdef _WIN32
+    MKDIR("saved_cards");
+    snprintf(folderPath, sizeof(folderPath), "saved_cards\\%s", cardName);
+    MKDIR(folderPath);
+    snprintf(filePath, sizeof(filePath), "%s\\animation_config.txt", folderPath);
+    #else
+    MKDIR("saved_cards");
+    snprintf(folderPath, sizeof(folderPath), "saved_cards/%s", cardName);
+    MKDIR(folderPath);
+    snprintf(filePath, sizeof(filePath), "%s/animation_config.txt", folderPath);
+    #endif
+
+    // Salva o arquivo de configuração na pasta do cartão
+    FILE* configFile = fopen(filePath, "w");
+    if (configFile != NULL) {
+        fprintf(configFile, "%s\n%s\n%s\n%d",
+            config->mainMessage,
+            config->subMessage,
+            config->thirdMessage,
+            config->useHeartBalloons ? 1 : 0);
+        fclose(configFile);
+    }
+}
 
 int runMessageInterface(AnimationConfig* config) {
     // Initialize window
@@ -45,11 +118,26 @@ int runMessageInterface(AnimationConfig* config) {
     Rectangle heartCheckbox = { 50, 450, 20, 20 };
     bool useHeartBalloons = false;
 
+    // Carregar configuração existente
+    loadExistingConfig(&titleBox, &secondaryBox, &thirdBox, &useHeartBalloons);
+
     // Build button
     Rectangle buildButton = { 875, 575, 100, 40 };
+
+    // Save button
+    Rectangle saveButton = { 750, 575, 100, 40 };
+
+    // Variáveis para salvar cartão
+    char cardName[256] = "";
+    bool showNameInput = false;
+
     int result = 0;
+    Vector2 mousePoint = { 0.0f, 0.0f };
 
     while (!WindowShouldClose()) {
+        // Atualizar posição do mouse
+        mousePoint = GetMousePosition();
+
         // Input handling
         TextBox* selectedBox = NULL;
         if (titleBox.isSelected) selectedBox = &titleBox;
@@ -57,42 +145,73 @@ int runMessageInterface(AnimationConfig* config) {
         if (thirdBox.isSelected) selectedBox = &thirdBox;
 
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-            Vector2 mousePoint = GetMousePosition();
+            if (!showNameInput) {  // Só permite clicar nos elementos se não estiver mostrando input de nome
+                titleBox.isSelected = CheckCollisionPointRec(mousePoint, titleBox.bounds);
+                secondaryBox.isSelected = CheckCollisionPointRec(mousePoint, secondaryBox.bounds);
+                thirdBox.isSelected = CheckCollisionPointRec(mousePoint, thirdBox.bounds);
 
-            titleBox.isSelected = CheckCollisionPointRec(mousePoint, titleBox.bounds);
-            secondaryBox.isSelected = CheckCollisionPointRec(mousePoint, secondaryBox.bounds);
-            thirdBox.isSelected = CheckCollisionPointRec(mousePoint, thirdBox.bounds);
+                // Check checkbox click
+                if (CheckCollisionPointRec(mousePoint, heartCheckbox)) {
+                    useHeartBalloons = !useHeartBalloons;
+                }
 
-            // Check checkbox click
-            if (CheckCollisionPointRec(mousePoint, heartCheckbox)) {
-                useHeartBalloons = !useHeartBalloons;
-            }
+                // Check if build button was clicked
+                if (CheckCollisionPointRec(mousePoint, buildButton)) {
+                    FILE* configFile = fopen("animation_config.txt", "w");
+                    if (configFile != NULL) {
+                        fprintf(configFile, "%s\n%s\n%s\n%d",
+                            titleBox.text,
+                            secondaryBox.text,
+                            thirdBox.text,
+                            useHeartBalloons ? 1 : 0);
+                        fclose(configFile);
 
-            // Check if build button was clicked
-            if (CheckCollisionPointRec(mousePoint, buildButton)) {
-                FILE* configFile = fopen("animation_config.txt", "w");
-                if (configFile != NULL) {
-                    fprintf(configFile, "%s\n%s\n%s\n%d",
-                        titleBox.text,
-                        secondaryBox.text,
-                        thirdBox.text,
-                        useHeartBalloons ? 1 : 0);
-                    fclose(configFile);
+                        // Atualizar a estrutura de configuração
+                        strcpy(config->mainMessage, titleBox.text);
+                        strcpy(config->subMessage, secondaryBox.text);
+                        strcpy(config->thirdMessage, thirdBox.text);
+                        config->useHeartBalloons = useHeartBalloons;
 
-                    // Atualizar a estrutura de configuração
-                    strcpy(config->mainMessage, titleBox.text);
-                    strcpy(config->subMessage, secondaryBox.text);
-                    strcpy(config->thirdMessage, thirdBox.text);
-                    config->useHeartBalloons = useHeartBalloons;
+                        result = 1;
+                        break;
+                    }
+                }
 
-                    result = 1;
-                    break;
+                // Check if save button was clicked
+                if (CheckCollisionPointRec(mousePoint, saveButton)) {
+                    showNameInput = true;
                 }
             }
         }
 
         // Text input handling
-        if (selectedBox != NULL) {
+        if (showNameInput) {
+            // Captura o nome do cartão
+            int key = GetCharPressed();
+            while (key > 0) {
+                if ((key >= 32) && (key <= 125) && (strlen(cardName) < 255)) {
+                    cardName[strlen(cardName)] = (char)key;
+                    cardName[strlen(cardName) + 1] = '\0';
+                }
+                key = GetCharPressed();
+            }
+
+            if (IsKeyPressed(KEY_BACKSPACE) && strlen(cardName) > 0) {
+                cardName[strlen(cardName) - 1] = '\0';
+            }
+
+            if (IsKeyPressed(KEY_ENTER) && strlen(cardName) > 0) {
+                AnimationConfig tempConfig = {0};
+                strcpy(tempConfig.mainMessage, titleBox.text);
+                strcpy(tempConfig.subMessage, secondaryBox.text);
+                strcpy(tempConfig.thirdMessage, thirdBox.text);
+                tempConfig.useHeartBalloons = useHeartBalloons;
+
+                saveCardToArchive(cardName, &tempConfig);
+                showNameInput = false;
+                cardName[0] = '\0';
+            }
+        } else if (selectedBox != NULL) {
             int key = GetCharPressed();
             while (key > 0) {
                 if ((key >= 32) && (key <= 125) && (selectedBox->letterCount < MAX_INPUT_LENGTH - 1)) {
@@ -154,9 +273,21 @@ int runMessageInterface(AnimationConfig* config) {
             }
             DrawText("Use heart-shaped balloons", heartCheckbox.x + 30, heartCheckbox.y + 1, 20, WHITE);
 
+            // Draw save button
+            DrawRectangleRec(saveButton, PINK);
+            DrawText("Save", saveButton.x + 30, saveButton.y + 10, 20, WHITE);
+
             // Draw build button
             DrawRectangleRec(buildButton, PINK);
             DrawText("Build", buildButton.x + 25, buildButton.y + 10, 20, WHITE);
+
+            // Draw name input interface
+            if (showNameInput) {
+                DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, ColorAlpha(BLACK, 0.8f));
+                DrawText("Enter card name:", SCREEN_WIDTH/2 - 100, SCREEN_HEIGHT/2 - 40, 20, WHITE);
+                DrawText(cardName, SCREEN_WIDTH/2 - 100, SCREEN_HEIGHT/2, 20, WHITE);
+                DrawText("Press ENTER to save", SCREEN_WIDTH/2 - 100, SCREEN_HEIGHT/2 + 40, 20, GRAY);
+            }
 
         EndDrawing();
     }

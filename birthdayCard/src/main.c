@@ -5,52 +5,49 @@
 #include "../include/messageInterface.h"
 #include "../include/messageLoader.h"
 #include "../include/config.h"
+#include "../include/menuInterface.h"
 
 int main() {
     // Create configuration structure
     AnimationConfig config = {0};
 
-    // Run message interface to get user input
-    int messagesSaved = runMessageInterface(&config);
+    while (1) {
+        // Run the menu interface
+        int menuChoice = runMenuInterface();
 
-    // If user didn't save messages (closed window without clicking Build), exit
-    if (!messagesSaved) {
-        return 0;
+        switch (menuChoice) {
+            case 0: // Exit program
+                return 0;
+
+            case 1: // Write new message
+                if (runMessageInterface(&config)) {
+                    RunBirthdayAnimation(&config, 1);  // 1 indica que veio da interface de escrita
+                }
+                break;
+
+            case 2: // Read existing message
+                if (LoadMessagesFromFile(&config)) {
+                    RunBirthdayAnimation(&config, 0);  // 0 indica que não veio da interface de escrita
+                } else {
+                    const int screenWidth = 400;
+                    const int screenHeight = 200;
+
+                    InitWindow(screenWidth, screenHeight, "Error");
+                    SetTargetFPS(60);
+
+                    while (!WindowShouldClose()) {
+                        BeginDrawing();
+                            ClearBackground(RAYWHITE);
+                            DrawText("No saved message found!", 50, 80, 20, RED);
+                            DrawText("Press ESC to return", 50, 120, 20, DARKGRAY);
+                        EndDrawing();
+                    }
+
+                    CloseWindow();
+                }
+                break;
+        }
     }
 
-    // Load messages from recently saved file
-    LoadMessagesFromFile(&config);
-
-    // Initialize window for birthday animation
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Happy Birthday!");
-    SetTargetFPS(60);
-
-    // Initialize objects
-    Balloon balloons[MAX_BALLOONS];
-    Star stars[MAX_STARS];
-    InitializeBalloons(balloons, MAX_BALLOONS, SCREEN_WIDTH, SCREEN_HEIGHT, config.useHeartBalloons);
-    InitializeStars(stars, MAX_STARS, SCREEN_WIDTH, SCREEN_HEIGHT);
-
-    // Main loop
-    while (!WindowShouldClose()) {
-        // Update
-        float currentTime = GetTime();
-        UpdateBalloons(balloons, MAX_BALLOONS, SCREEN_HEIGHT, currentTime);
-        UpdateStars(stars, MAX_STARS, currentTime);
-
-        // Draw
-        BeginDrawing();
-            ClearBackground(BACKGROUND_COLOR);
-
-            // Draw animation elements
-            DrawStars(stars, MAX_STARS);
-            DrawBalloons(balloons, MAX_BALLOONS, currentTime);
-            DrawAnimatedText(currentTime);
-
-        EndDrawing();
-    }
-
-    // Cleanup
-    CloseWindow();
     return 0;
 }
