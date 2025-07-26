@@ -1,8 +1,9 @@
-#include "../include/star.h"
 #include <math.h>
+#include "../include/star.h"
 
 // Initialize stars with random properties
 void InitializeStars(Star stars[], int maxStars, int screenWidth, int screenHeight) {
+
     for (int i = 0; i < maxStars; i++) {
         stars[i].position.x = GetRandomValue(0, screenWidth);
         stars[i].position.y = GetRandomValue(0, screenHeight);
@@ -20,23 +21,26 @@ void InitializeStars(Star stars[], int maxStars, int screenWidth, int screenHeig
             255
         };
     }
+
 }
 
 // Update star animations (rotation and scale)
 void UpdateStars(Star stars[], int maxStars, float time) {
+
     for (int i = 0; i < maxStars; i++) {
-        // Update rotation at moderate speed
+        // Update rotation
         stars[i].rotation += stars[i].rotationSpeed * 1.2f;
 
-        // Update scale with gentle sinusoidal motion
+        // Update scale
         stars[i].scale = 1.0f + 0.1f * sin(time * 1.0f + i);
     }
+
 }
 
-// Draw 5-pointed stars
+// Draw stars
 void DrawStars(Star stars[], int maxStars) {
+
     for (int i = 0; i < maxStars; i++) {
-        // Draw a 5-pointed star
         float angle = 0;
         float outerRadius = stars[i].radius * stars[i].scale;
         float innerRadius = outerRadius * 0.4f;
@@ -53,4 +57,5 @@ void DrawStars(Star stars[], int maxStars) {
             DrawLineEx((Vector2){x1, y1}, (Vector2){x2, y2}, 2.0f, stars[i].color);
         }
     }
+
 }

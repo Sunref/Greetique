@@ -1,24 +1,21 @@
-#include "../include/animation.h"
-#include "../include/messageInterface.h"
-#include "../include/balloon.h"
-#include "../include/star.h"
-#include "../include/gif.h"
 #include <math.h>
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
+#include "../include/gif.h"
+#include "../include/star.h"
+#include "../include/balloon.h"
+#include "../include/animation.h"
 
 #define SAVE_BUTTON_WIDTH 100
 #define SAVE_BUTTON_HEIGHT 40
 #define SAVE_BUTTON_PADDING 20
-#define MAX_FRAMES 300
-
-// Exit button definitions
 #define EXIT_BUTTON_WIDTH 80
 #define EXIT_BUTTON_HEIGHT 32
 #define EXIT_BUTTON_PADDING 20
+#define MAX_FRAMES 300
 
-// Draw message with animated color effects
 void DrawAnimatedText(float currentTime, const AnimationConfig* config) {
+
     // Add animation effects
     float bounce = sin(currentTime * 2.0f) * 5.0f;
     float fade = (sin(currentTime * 3.0f) + 1.0f) / 2.0f;
@@ -39,16 +36,18 @@ void DrawAnimatedText(float currentTime, const AnimationConfig* config) {
                  (Color){255, 255, 255, 255});
     }
 
-    // Draw third message only if it's not empty
-    if (strlen(config->thirdMessage) > 0) {
-        int thirdTextWidth = MeasureText(config->thirdMessage, THIRD_FONT_SIZE);
-        int thirdX = (SCREEN_WIDTH - thirdTextWidth) / 2;
-        DrawText(config->thirdMessage, thirdX, 320, THIRD_FONT_SIZE,
+    // Draw details message only if it's not empty
+    if (strlen(config->detailsMessage) > 0) {
+        int detailsTextWidth = MeasureText(config->detailsMessage, DETAILS_FONT_SIZE);
+        int detailsX = (SCREEN_WIDTH - detailsTextWidth) / 2;
+        DrawText(config->detailsMessage, detailsX, 320, DETAILS_FONT_SIZE,
                  (Color){200, 200, 255, 255});
     }
+
 }
 
 void SaveAnimationAsGif(const AnimationConfig* config, const char* filename) {
+
     const int width = SCREEN_WIDTH;
     const int height = SCREEN_HEIGHT;
 
@@ -78,14 +77,14 @@ void SaveAnimationAsGif(const AnimationConfig* config, const char* filename) {
         float currentTime = frame / 30.0f;
 
         // Define sequence timing
-        float star_start = 0.5f;            // Stars appear at 1s
-        float text_start = 1.5f;            // Text appears at 2s
-        float balloon_start = 2.0f;         // Balloons start rising at 2s
-        float balloon_fade_start = 2.0f;    // Balloons start fading at 2.0s
-        float balloon_end = 14.0f;          // Balloons disappear at 15s
-        float text_end = 14.4f;             // Text disappears at 14s
-        float star_end = 14.8f;             // Stars disappear at 14.5s
-        float smiley_start = 14.8f;         // :) appears when stars disappear
+        float star_start = 0.5f;            // Stars appear
+        float text_start = 1.5f;            // Text appears
+        float balloon_start = 2.0f;         // Balloons start rising
+        float balloon_fade_start = 2.0f;    // Balloons start fading
+        float balloon_end = 14.0f;          // Balloons disappear
+        float text_end = 14.4f;             // Text disappears
+        float star_end = 14.8f;             // Stars disappear
+        float smiley_start = 14.8f;         // :) appears
 
         // Update objects conditionally
         UpdateStars(stars, MAX_STARS, currentTime);
@@ -99,7 +98,7 @@ void SaveAnimationAsGif(const AnimationConfig* config, const char* filename) {
         BeginDrawing();
         ClearBackground(BACKGROUND_COLOR);
 
-        // Draw stars (appear at 1s, disappear at 14s)
+        // Draw stars
         if (currentTime >= star_start && currentTime < star_end) {
             float star_alpha = 1.0f;
             if (currentTime < star_start + 0.5f) {
@@ -114,11 +113,11 @@ void SaveAnimationAsGif(const AnimationConfig* config, const char* filename) {
             }
         }
 
-        // Draw balloons (always visible when on screen, fade out over 2.5s)
+        // Draw balloons
         if (currentTime < balloon_end) {
             float balloon_alpha = 1.0f;
             if (currentTime >= balloon_fade_start) {
-                // Fade out balloons over 2.5 seconds
+                // Fade out balloons
                 balloon_alpha = (balloon_end - currentTime) / 2.5f;
             }
             if (balloon_alpha > 0.0f) {
@@ -126,7 +125,7 @@ void SaveAnimationAsGif(const AnimationConfig* config, const char* filename) {
             }
         }
 
-        // Draw text (appear at 2s, disappear at 13.5s)
+        // Draw text
         if (currentTime >= text_start && currentTime < text_end) {
             float text_alpha = 1.0f;
             if (currentTime < text_start + 0.5f) {
@@ -141,7 +140,7 @@ void SaveAnimationAsGif(const AnimationConfig* config, const char* filename) {
             }
         }
 
-        // Draw :) when stars disappear (at 14.8s) until end
+        // Draw :) when stars disappear
         if (currentTime >= smiley_start) {
             DrawText(":)", SCREEN_WIDTH - 60, SCREEN_HEIGHT - 60, 40, WHITE);
         }
@@ -151,7 +150,7 @@ void SaveAnimationAsGif(const AnimationConfig* config, const char* filename) {
         // Capture clean frame for GIF
         Image screenshot = LoadImageFromScreen();
 
-        // Now draw the same frame with saving message for user feedback
+        // Draw the same frame with saving message for user feedback
         BeginDrawing();
         ClearBackground(BACKGROUND_COLOR);
         DrawStars(stars, MAX_STARS);
@@ -185,8 +184,7 @@ void SaveAnimationAsGif(const AnimationConfig* config, const char* filename) {
         if (!success) break;
     }
 
-    // The sequence naturally ends with blue background, no extra frame needed
-
+    // The sequence naturally ends with blue background
     GifEnd(&writer);
 
     if (success) {
@@ -194,9 +192,11 @@ void SaveAnimationAsGif(const AnimationConfig* config, const char* filename) {
     } else {
         printf("Failed to save GIF!\n");
     }
+
 }
 
 void RunMessageAnimation(AnimationConfig* config, int fromWriteInterface) {
+
     (void)fromWriteInterface; // Suppress unused parameter warning
     // Initialize window for message animation
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Message Card!");
@@ -252,8 +252,8 @@ void RunMessageAnimation(AnimationConfig* config, int fromWriteInterface) {
 
             bool isSaveHovered = CheckCollisionPointRec(mousePoint, saveButton);
 
-            DrawRectangleRec(saveButton, isSaveHovered ? (Color){255, 192, 203, 255} : (Color){255, 182, 193, 200});
-            DrawText("Save GIF", saveButton.x + 10, saveButton.y + 10, 20, WHITE);
+            DrawRectangleRec(saveButton, isSaveHovered ? (Color){ 210, 180, 140, 255 } : (Color){220, 210, 180, 255});
+            DrawText("Save GIF", saveButton.x + 4, saveButton.y + 10, 20, WHITE);
 
             if (isSaveHovered && IsMouseButtonReleased(MOUSE_LEFT_BUTTON)) {
                 SaveAnimationAsGif(config, "animation.gif");
@@ -261,11 +261,12 @@ void RunMessageAnimation(AnimationConfig* config, int fromWriteInterface) {
 
             // Draw edit button
             bool isEditHovered = CheckCollisionPointRec(mousePoint, editButton);
-            DrawRectangleRec(editButton, isEditHovered ? (Color){255, 192, 203, 255} : (Color){255, 182, 193, 200});
-            DrawText("Edit", editButton.x + 25, editButton.y + 8, 20, WHITE);
+            DrawRectangleRec(editButton, isEditHovered ? (Color){ 210, 180, 140, 255 } : (Color){220, 210, 180, 255});
+            DrawText("Edit", editButton.x + 20, editButton.y + 8, 20, WHITE);
 
         EndDrawing();
     }
 
     CloseWindow();
+
 }

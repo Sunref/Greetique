@@ -14,10 +14,10 @@
 // Font sizes
 #define MAIN_FONT_SIZE 50
 #define SUB_FONT_SIZE 30
-#define THIRD_FONT_SIZE 20
+#define DETAILS_FONT_SIZE 20
 
 // Background color
-#define BACKGROUND_COLOR (Color){ 25, 25, 50, 255 }
+#define BACKGROUND_COLOR (Color){ 0, 10, 29, 255 }
 
 // Maximum message length
 #define MAX_MESSAGE_LENGTH 256
@@ -26,7 +26,7 @@
 typedef struct {
     char mainMessage[MAX_MESSAGE_LENGTH];
     char subMessage[MAX_MESSAGE_LENGTH];
-    char thirdMessage[MAX_MESSAGE_LENGTH];
+    char detailsMessage[MAX_MESSAGE_LENGTH];
     int useHeartBalloons;
 } AnimationConfig;
 

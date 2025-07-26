@@ -4,8 +4,8 @@
 // Based on Charlie Tangora's public domain GIF encoder
 //
 
-#include "../include/gif.h"
 #include <string.h>
+#include "../include/gif.h"
 
 const int kGifTransIndex = 0;
 
@@ -319,7 +319,7 @@ void GifMakePalette( const uint8_t* lastFrame, const uint8_t* nextFrame, uint32_
     size_t imageSize = (size_t)(width * height * 4 * sizeof(uint8_t));
     uint8_t* destroyableImage = (uint8_t*)GIF_TEMP_MALLOC(imageSize);
     if (!destroyableImage) return;
-    
+
     memcpy(destroyableImage, nextFrame, imageSize);
 
     int numPixels = (int)(width * height);

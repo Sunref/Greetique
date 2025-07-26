@@ -1,10 +1,11 @@
-#include "../include/balloon.h"
-#include "../include/config.h"
 #include <math.h>
+#include "../include/config.h"
+#include "../include/balloon.h"
 #include "../include/raylib/raylib.h"
 
 // Initialize balloons with random positions, sizes, and colors
 void InitializeBalloons(Balloon balloons[], int maxBalloons, int screenWidth, int screenHeight, bool useHeartBalloons) {
+
     for (int i = 0; i < maxBalloons; i++) {
         balloons[i].position.x = GetRandomValue(50, screenWidth - 50);
         balloons[i].position.y = GetRandomValue(screenHeight, screenHeight + 300);
@@ -13,7 +14,7 @@ void InitializeBalloons(Balloon balloons[], int maxBalloons, int screenWidth, in
 
         // Use heart shape only if useHeartBalloons is true
         balloons[i].shape = useHeartBalloons ?
-            (GetRandomValue(0, 1) ? BALLOON_HEART : BALLOON_OVAL) : // 50% chance of heart if enabled
+            (GetRandomValue(0, 1) ? BALLOON_HEART : BALLOON_OVAL) :
             BALLOON_OVAL; // Always oval if hearts are disabled
 
         // Vibrant random colors for balloons
@@ -29,10 +30,12 @@ void InitializeBalloons(Balloon balloons[], int maxBalloons, int screenWidth, in
             case 7: balloons[i].color = BLUE; break;
         }
     }
+
 }
 
-// Draw filled heart shape with outline
+// Draw heart shape
 void DrawHeart(Vector2 position, float radius, Color color) {
+
     const int segments = 36;
     Vector2 points[segments];
 
@@ -46,12 +49,12 @@ void DrawHeart(Vector2 position, float radius, Color color) {
         points[i].y = position.y + (y * radius / 16);
     }
 
-    // Draw heart filling
+    // Draw heart
     for (int i = 1; i < segments - 1; i++) {
         DrawTriangle(points[0], points[i], points[i + 1], color);
     }
 
-    // Draw outline with a slightly darker color
+    // Draw outline
     Color outlineColor = ColorBrightness(color, 0.7f);
     for (int i = 0; i < segments; i++) {
         DrawLineEx(
@@ -61,10 +64,12 @@ void DrawHeart(Vector2 position, float radius, Color color) {
             outlineColor
         );
     }
+
 }
 
 // Draw balloons with highlights and strings
 void DrawBalloons(Balloon balloons[], int maxBalloons, float time) {
+
     for (int i = 0; i < maxBalloons; i++) {
         if (balloons[i].shape == BALLOON_OVAL) {
             // Draw oval balloon
@@ -85,9 +90,8 @@ void DrawBalloons(Balloon balloons[], int maxBalloons, float time) {
                 WHITE
             );
         } else {
-            // Draw heart balloon (filled with outline)
+            // Draw heart balloon
             DrawHeart(balloons[i].position, balloons[i].radius * 1.2f, balloons[i].color);
-
         }
 
         // Draw balloon string with slight movement
@@ -100,10 +104,12 @@ void DrawBalloons(Balloon balloons[], int maxBalloons, float time) {
             stringColor
         );
     }
+
 }
 
 // Update balloon positions and movement
 void UpdateBalloons(Balloon balloons[], int maxBalloons, int screenHeight, float time) {
+
     for (int i = 0; i < maxBalloons; i++) {
         // Move upward at balloon speed
         balloons[i].position.y -= balloons[i].speed;
@@ -117,4 +123,5 @@ void UpdateBalloons(Balloon balloons[], int maxBalloons, int screenHeight, float
             balloons[i].position.x = GetRandomValue(50, SCREEN_WIDTH - 50);
         }
     }
+
 }
