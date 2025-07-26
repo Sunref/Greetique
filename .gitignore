@@ -1,0 +1,25 @@
+# Arquivos GIF gerados
+*.gif
+
+# Arquivos de build
+build/
+*.o
+*.exe
+bin/
+
+# Arquivos temporários
+*.tmp
+*.temp
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
+
+# Diretórios de IDE/Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Arquivos de log
+*.log

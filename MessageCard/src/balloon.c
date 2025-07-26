@@ -1,7 +1,7 @@
 #include "../include/balloon.h"
 #include "../include/config.h"
 #include <math.h>
-#include <raylib.h>
+#include "../include/raylib/raylib.h"
 
 // Initialize balloons with random positions, sizes, and colors
 void InitializeBalloons(Balloon balloons[], int maxBalloons, int screenWidth, int screenHeight, bool useHeartBalloons) {
@@ -109,7 +109,7 @@ void UpdateBalloons(Balloon balloons[], int maxBalloons, int screenHeight, float
         balloons[i].position.y -= balloons[i].speed;
 
         // Gentle side-to-side floating effect
-        balloons[i].position.x += sin(time + i) * 0.5f;
+        balloons[i].position.x += sin(time + i) * 0.3f;
 
         // Reset position if balloon moves off-screen
         if (balloons[i].position.y < -balloons[i].radius * 2) {

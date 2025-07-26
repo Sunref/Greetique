@@ -1,7 +1,7 @@
 #ifndef STAR_H
 #define STAR_H
 
-#include "raylib.h"
+#include "raylib/raylib.h"
 
 // Star structure definition
 typedef struct {

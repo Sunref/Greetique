@@ -4,11 +4,18 @@ CFLAGS = -Wall -Wextra -std=c99 -pedantic
 # Add quiet flag to suppress command output during build
 MAKEFLAGS += --silent
 
+# GIF recording settings
+SCREENSHOT_DIR = screenshots
+GIF_OUTPUT = animation.gif
+FRAMES_PER_SECOND = 30
+GIF_DURATION = 7
+GIF_DELAY = 5
+
 # Platform-specific settings
 PLATFORM ?= LINUX
 
 ifeq ($(PLATFORM), LINUX)
-    INCLUDES = -Iinclude
+    INCLUDES = -I. -Iinclude -Iinclude/raylib
     # Updated library linking order and names for better compatibility
     LIBS = -lraylib -lm -lpthread -ldl -lrt -lX11 -lXrandr -lXinerama -lXi -lXxf86vm -lXcursor -lGL
     # Try static linking, but allow fallback to dynamic
@@ -17,7 +24,7 @@ endif
 
 ifeq ($(PLATFORM), WINDOWS)
     CC = x86_64-w64-mingw32-gcc
-    INCLUDES = -Iinclude
+    INCLUDES = -I. -Iinclude -Iinclude/raylib
     LIBS = -lraylib -lopengl32 -lgdi32 -lwinmm
     LDFLAGS = -static-libgcc -static-libstdc++
 endif
@@ -29,10 +36,10 @@ BINDIR = bin
 INCLUDEDIR = include
 
 # Source files
-SOURCES = $(SRCDIR)/main.c $(SRCDIR)/animation.c $(SRCDIR)/balloon.c $(SRCDIR)/star.c $(SRCDIR)/messageInterface.c $(SRCDIR)/messageLoader.c $(SRCDIR)/menuInterface.c
+SOURCES = $(SRCDIR)/main.c $(SRCDIR)/animation.c $(SRCDIR)/balloon.c $(SRCDIR)/star.c $(SRCDIR)/messageInterface.c $(SRCDIR)/gif.c
 
-# Object files (corrigido para incluir menuInterface.o)
-OBJECTS = $(BUILDDIR)/main.o $(BUILDDIR)/animation.o $(BUILDDIR)/balloon.o $(BUILDDIR)/star.o $(BUILDDIR)/messageInterface.o $(BUILDDIR)/messageLoader.o $(BUILDDIR)/menuInterface.o
+# Object files
+OBJECTS = $(BUILDDIR)/main.o $(BUILDDIR)/animation.o $(BUILDDIR)/balloon.o $(BUILDDIR)/star.o $(BUILDDIR)/messageInterface.o $(BUILDDIR)/gif.o
 
 # Executable
 EXECUTABLE = $(BINDIR)/message_animation
@@ -65,7 +72,7 @@ clean:
 
 clean-all:
 	@echo "Cleaning all build artifacts..."
-	@rm -rf $(BUILDDIR) $(BINDIR)
+	@rm -rf $(BUILDDIR) $(BINDIR) $(SCREENSHOT_DIR) $(GIF_OUTPUT)
 
 # Run the program (suppress terminal output)
 run: $(EXECUTABLE)
@@ -125,16 +132,37 @@ debug-libs:
 
 # Help
 help:
-	@echo "Targets disponíveis:"
-	@echo "  all          - Compila o programa completo (padrão)"
-	@echo "  clean        - Remove arquivos objeto"
-	@echo "  clean-all    - Remove diretórios build e bin"
-	@echo "  run          - Executa o programa (sem saída no terminal)"
-	@echo "  run-verbose  - Executa o programa (com saída no terminal)"
-	@echo "  debug        - Compila com símbolos de debug"
-	@echo "  release      - Compila versão otimizada para distribuição"
-	@echo "  windows      - Cross-compila para Windows"
-	@echo "  install-deps - Instala dependências (Ubuntu/Debian)"
+	@echo "Message Card Creator - Available Targets:"
+	@echo "  all          - Build the complete program (default)"
+	@echo "  clean        - Remove object files"
+	@echo "  clean-all    - Remove build and bin directories"
+	@echo "  run          - Run the program (quiet mode)"
+	@echo "  run-verbose  - Run the program (with debug output)"
+	@echo "  debug        - Compile with debug symbols"
+	@echo "  release      - Compile optimized version for distribution"
+	@echo "  windows      - Cross-compile for Windows"
+	@echo "  install-deps - Install dependencies (Ubuntu/Debian)"
+	@echo "  help         - Show this help message"
+	@echo ""
+	@echo "Usage: Create messages → View animation → Export GIF"
+
+# Create screenshots directory
+$(SCREENSHOT_DIR):
+	@mkdir -p $(SCREENSHOT_DIR)
+
+# Generate GIF from screenshots
+gif: $(EXECUTABLE) | $(SCREENSHOT_DIR)
+	@echo "Recording high-quality animation to GIF..."
+	@$(EXECUTABLE) --record
+	@echo "Converting frames to smooth GIF..."
+	@ffmpeg -y -framerate $(FRAMES_PER_SECOND) -i $(SCREENSHOT_DIR)/frame_%04d.png \
+		-vf "fps=$(FRAMES_PER_SECOND),scale=800:-1:flags=lanczos,palettegen=max_colors=256" palette.png
+	@ffmpeg -y -framerate $(FRAMES_PER_SECOND) -i $(SCREENSHOT_DIR)/frame_%04d.png -i palette.png \
+		-filter_complex "fps=$(FRAMES_PER_SECOND),scale=800:-1:flags=lanczos[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=3" \
+		$(GIF_OUTPUT)
+	@rm -f palette.png
+	@rm -rf $(SCREENSHOT_DIR)
+	@echo "High-quality GIF created successfully as $(GIF_OUTPUT)!"
 
 # Phony targets
-.PHONY: all clean clean-all run run-verbose install-deps debug release windows help
+.PHONY: all clean clean-all run run-verbose install-deps debug release windows help gif

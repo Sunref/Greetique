@@ -1,7 +1,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#include "raylib.h"
+#include "raylib/raylib.h"
 
 // Screen dimensions
 #define SCREEN_WIDTH 1024

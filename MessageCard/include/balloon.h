@@ -1,7 +1,7 @@
 #ifndef BALLOON_H
 #define BALLOON_H
 
-#include "raylib.h"
+#include "raylib/raylib.h"
 
 typedef enum {
     BALLOON_OVAL,

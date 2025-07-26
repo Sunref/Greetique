@@ -25,16 +25,11 @@ void InitializeStars(Star stars[], int maxStars, int screenWidth, int screenHeig
 // Update star animations (rotation and scale)
 void UpdateStars(Star stars[], int maxStars, float time) {
     for (int i = 0; i < maxStars; i++) {
-        // Update rotation
-        stars[i].rotation += stars[i].rotationSpeed;
+        // Update rotation at moderate speed
+        stars[i].rotation += stars[i].rotationSpeed * 1.2f;
 
-        // Update scale with sinusoidal motion
-        stars[i].scale += stars[i].scaleSpeed * sin(time * 2 + i);
-
-        // Keep scale within reasonable bounds
-        if (stars[i].scale < 0.8f || stars[i].scale > 1.2f) {
-            stars[i].scaleSpeed *= -1;
-        }
+        // Update scale with gentle sinusoidal motion
+        stars[i].scale = 1.0f + 0.1f * sin(time * 1.0f + i);
     }
 }
 
