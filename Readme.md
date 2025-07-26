@@ -137,7 +137,7 @@ Created by Fernanda.
 
 Built with [Raylib](https://www.raylib.com/).
 
-gif.h/.c based on gif-h by [gif-h](https://github.com/charlietangora/gif-h).
+gif.h/.c based on gif-h by [charlietangora](https://github.com/charlietangora).
 
 ## License
 
