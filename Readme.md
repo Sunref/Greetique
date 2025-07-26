@@ -134,7 +134,9 @@ The application uses these default settings (defined in `config.h`):
 ## Credits
 
 Created by Fernanda.
+
 Built with [Raylib](https://www.raylib.com/).
+
 gif.h/.c based on gif-h by [gif-h](https://github.com/charlietangora/gif-h).
 
 ## License
